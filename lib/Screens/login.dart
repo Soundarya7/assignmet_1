@@ -1,7 +1,7 @@
 import 'package:assignmet_1/Widgets/evaluatedbutton.dart';
 import 'package:assignmet_1/Widgets/text.dart';
 import 'package:assignmet_1/Widgets/textfield.dart';
-import 'package:assignmet_1/heading.dart';
+import 'package:assignmet_1/Widgets/heading.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget{
@@ -81,14 +81,9 @@ class _LoginScreenState extends State<LoginScreen> {
       body: const Center(
         child: Column(
               children: <Widget>[
-                Expanded(
-                    flex: 1,
-                    child: Padding(
-                      padding: EdgeInsets.all(32.0),
-                      child: Heading(
-                          sText1: "Welcome!",
-                          sText2: "Please login to your Account",bVisibil: true,),
-                    )),
+                Heading(
+                    sText1: "Welcome!",
+                    sText2: "Please login to your Account",bVisibil: true,),
 
                 //Heading(sText1: "",sText2: "Register an Account"),
             

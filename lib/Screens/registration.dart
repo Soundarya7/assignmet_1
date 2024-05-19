@@ -1,7 +1,9 @@
+import 'package:assignmet_1/Providers/phoneauthnotifier.dart';
 import 'package:assignmet_1/Widgets/evaluatedbutton.dart';
 import 'package:assignmet_1/Widgets/textfield.dart';
-import 'package:assignmet_1/heading.dart';
+import 'package:assignmet_1/Widgets/heading.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SecondScreen extends StatefulWidget {
   const SecondScreen({super.key});
@@ -12,7 +14,6 @@ class SecondScreen extends StatefulWidget {
 TextEditingController _edtxtMail = TextEditingController();
 TextEditingController _edtxtName = TextEditingController();
 TextEditingController _edtxtNum = TextEditingController();
-void _onPressed() {}
 
 class _SecondScreenState extends State<SecondScreen> {
   @override
@@ -31,14 +32,16 @@ class _SecondScreenState extends State<SecondScreen> {
                                     Expanded(flex:1,child: CoustTextfield(controller: _edtxtNum,inputtype: TextInputType.phone,hint:"Phone Number" ,radius: 8,width: 10,),
                                 
                                 ),
-                                const Expanded(flex: 1,child: CoustEvalButton(onPressed:_onPressed ,buttonName:"Verify"  ,radius: 8,width: double.infinity,FontSize: 20,),
+                                 Expanded(flex: 1,child: Consumer(builder: (context, ref, child) {
+                                  return CoustEvalButton(onPressed:(){ref.read(phoneAuthProvider.notifier).phoneAuth(context, _edtxtNum.text.trim(), ref);} ,buttonName:"Verify"  ,radius: 8,width: double.infinity,FontSize: 20,);
+                                }, ),
                                 ),
                               ],
                               ),   
                               const SizedBox(height: 10,),          
-                             const SizedBox(
+                              SizedBox(
                               width: double.infinity,
-                               child: CoustEvalButton(onPressed: _onPressed,FontSize: 20,radius: 8,width: double.infinity,buttonName:"Register" ),
+                               child: CoustEvalButton(onPressed: (){},FontSize: 20,radius: 8,width: double.infinity,buttonName:"Register" ),
                              ),            
                             ],
                           ),
