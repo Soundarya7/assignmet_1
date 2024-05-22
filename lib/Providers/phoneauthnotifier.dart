@@ -59,6 +59,8 @@ class PhoneAuthNotifier extends StateNotifier<PhoneAuthState> {
       await auth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async {
+          loadingState.state = false;
+        
           // Handle auto-retrieval or instant verification
         },
         verificationFailed: (FirebaseException exception) {
@@ -67,12 +69,15 @@ class PhoneAuthNotifier extends StateNotifier<PhoneAuthState> {
               exception.message ?? "An error occurred.");
         },
         codeSent: (String verificationId, [int? forceResendingToken]) async {
+          
+        state=  state.copyWith(vrfCompleted: true);
+          loadingState.state = false;
+          print("Vrification Done ${state.vrfCompleted}");
           _showAlertDialog(
               context, "Code Sent", "Verification code sent on your mobile.");
           Navigator.of(context).pushNamed('verifyotp', arguments: phoneNumber);
           final prefs = await SharedPreferences.getInstance();
           prefs.setString('verificationid', verificationId);
-          loadingState.state = false;
         },
         timeout: const Duration(seconds: 30),
         codeAutoRetrievalTimeout: (String verificationId) {
@@ -89,11 +94,10 @@ class PhoneAuthNotifier extends StateNotifier<PhoneAuthState> {
       String smsCode,
       BuildContext context,
       WidgetRef ref,
-      String phoneNumber,
-      ScaffoldMessengerState scaffoldKey) async {
+      String phoneNumber) async {
     final prefs = await SharedPreferences.getInstance();
     String? verificationId = prefs.getString('verificationid');
-   
+
     final loadingState = ref.watch(loadingProvider.notifier);
     try {
       loadingState.state = true;
@@ -108,8 +112,6 @@ class PhoneAuthNotifier extends StateNotifier<PhoneAuthState> {
           user.getIdToken().then((ftoken) async {
             await prefs.setString('firebaseToken', ftoken!);
           });
-
-          
         }
       });
 

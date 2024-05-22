@@ -1,12 +1,13 @@
 import 'package:assignmet_1/Colors/coustcolors.dart';
 import 'package:assignmet_1/Screens/login.dart';
 import 'package:assignmet_1/Screens/registration.dart';
+import 'package:assignmet_1/Screens/venues.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-void main()async {
-    WidgetsFlutterBinding.ensureInitialized();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
   runApp(ProviderScope(child: const MyApp()));
@@ -21,19 +22,36 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        //colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-        buttonTheme: const ButtonThemeData(buttonColor:CoustColors.colrButton3,textTheme: ButtonTextTheme.primary ),
-        scaffoldBackgroundColor:CoustColors.colrButton3
-      ),
-       routes: {
-        '/':(BuildContext context){
+          //colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+          buttonTheme: const ButtonThemeData(
+            buttonColor: Color(0xFF6418C3),
+          ),
+          scaffoldBackgroundColor: CoustColors.colrButton3,
+          progressIndicatorTheme: const ProgressIndicatorThemeData(
+            color: Colors
+                .white, // Setting CircularProgressIndicator color to white
+          ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.white,
+              backgroundColor: const Color(0xFF6418C3),
+            ),
+          ),
+          bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+            selectedItemColor:  CoustColors.colrButton3,
+            unselectedItemColor: CoustColors.colrSubText,
+          )),
+      routes: {
+        '/': (BuildContext context) {
           return const LoginScreen();
         },
-         '/second':(BuildContext context){
-          return  const SecondScreen();
+        '/second': (BuildContext context) {
+          return const SecondScreen();
         },
-      
+        '/venue': (BuildContext context) {
+          return Venuscreen();
+        },
       },
     );
   }

@@ -1,25 +1,42 @@
+import 'package:assignmet_1/Providers/loaded.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CoustEvalButton extends StatelessWidget{
-  const CoustEvalButton({super.key,this.onPressed,this.buttonName,this.bgColor,this.width,this.radius,this.textColor,this.FontSize});
- final VoidCallback? onPressed;
- final String? buttonName;
- final MaterialStateProperty<Color?>? bgColor;
- final double? width;
- final double? radius;
- final Color? textColor;
- final double? FontSize;
+class CoustEvalButton extends StatelessWidget {
+  const CoustEvalButton(
+      {super.key,
+      this.onPressed,
+      this.buttonName,
+      this.bgColor,
+      this.width,
+      this.radius,
+      this.textColor,
+      this.FontSize,
+      this.isLoading});
+  final VoidCallback? onPressed;
+  final String? buttonName;
+  final Color? bgColor;
+  final double? width;
+  final double? radius;
+  final Color? textColor;
+  final double? FontSize;
+  final bool? isLoading;
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(onPressed: onPressed, child:Text(buttonName!,style: TextStyle(color: textColor, fontSize: FontSize),),style: ButtonStyle(
-                                      backgroundColor:bgColor,
-                                      maximumSize: MaterialStatePropertyAll(
-                                          Size.fromWidth(width!)),
-                                      shape: MaterialStatePropertyAll(
-                                          RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(radius!))))),);
+    return ElevatedButton(
+      onPressed: onPressed,
+      child: isLoading == true
+          ? SizedBox(
+              height: 20, width: 20, child: const CircularProgressIndicator())
+          : Text(
+              buttonName!,
+              style: TextStyle(color: textColor, fontSize: FontSize),
+            ),
+      style: ButtonStyle(
+          maximumSize: MaterialStatePropertyAll(Size.fromWidth(width!)),
+          shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(radius!))))),
+    );
   }
-  
 }
