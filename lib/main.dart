@@ -1,6 +1,7 @@
 import 'package:assignmet_1/Colors/coustcolors.dart';
 import 'package:assignmet_1/Screens/login.dart';
 import 'package:assignmet_1/Screens/registration.dart';
+import 'package:assignmet_1/Screens/venudetails.dart';
 import 'package:assignmet_1/Screens/venues.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,10 @@ class MyApp extends StatelessWidget {
           return const SecondScreen();
         },
         '/venue': (BuildContext context) {
-          return Venuscreen();
+          return const Venuscreen();
+        },
+         '/venue_details': (BuildContext context) {
+          return const VenuDetailsScreen();
         },
       },
     );

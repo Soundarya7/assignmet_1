@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:assignmet_1/Providers/auth.dart';
 import 'package:assignmet_1/Providers/loaded.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +47,10 @@ class PhoneAuthNotifier extends StateNotifier<PhoneAuthState> {
     state = state.copyWith(wait: !state.wait);
   }
 
+  void updateOtp(String otp) {
+    state = state.copyWith(otp: otp);
+  }
+
   FirebaseAuth auth = FirebaseAuth.instance;
   Future<void> phoneAuth(
       BuildContext context, String phoneNumber, WidgetRef ref) async {
@@ -60,7 +65,7 @@ class PhoneAuthNotifier extends StateNotifier<PhoneAuthState> {
         phoneNumber: phoneNumber,
         verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async {
           loadingState.state = false;
-        
+
           // Handle auto-retrieval or instant verification
         },
         verificationFailed: (FirebaseException exception) {
@@ -69,13 +74,15 @@ class PhoneAuthNotifier extends StateNotifier<PhoneAuthState> {
               exception.message ?? "An error occurred.");
         },
         codeSent: (String verificationId, [int? forceResendingToken]) async {
-          
-        state=  state.copyWith(vrfCompleted: true);
+          state = state.copyWith(vrfCompleted: true);
           loadingState.state = false;
+           ref.read(buttonTextProvider.notifier).state = "Log in"; 
+           ref.read( VerifyOtp.notifier).state = true;
+          //ref.read(enablepasswaorProvider.notifier).state = false; 
           print("Vrification Done ${state.vrfCompleted}");
+          print("VerID1 $verificationId");
           _showAlertDialog(
               context, "Code Sent", "Verification code sent on your mobile.");
-          Navigator.of(context).pushNamed('verifyotp', arguments: phoneNumber);
           final prefs = await SharedPreferences.getInstance();
           prefs.setString('verificationid', verificationId);
         },
@@ -90,33 +97,49 @@ class PhoneAuthNotifier extends StateNotifier<PhoneAuthState> {
     }
   }
 
-  Future<void> signInWithPhoneNumber(
-      String smsCode,
-      BuildContext context,
-      WidgetRef ref,
-      String phoneNumber) async {
+  Future<void> signInWithPhoneNumber(String smsCode, BuildContext context,
+      WidgetRef ref, String phoneNumber,bool login,{String? password,String? email,String? username}) async {
+    // print("Sms${smsCode}");
     final prefs = await SharedPreferences.getInstance();
-    String? verificationId = prefs.getString('verificationid');
+    String? verificationId =  prefs.getString('verificationid');
+                  Set<String> keys = prefs.getKeys();
 
+              // Print keys
+              print('SharedPreferences Keys: $keys');
+
+    if (verificationId == null) {
+      _showAlertDialog(context, "Error", "Verification ID is null.");
+      return;
+    }
     final loadingState = ref.watch(loadingProvider.notifier);
     try {
       loadingState.state = true;
-
+      print("VerID${prefs.getString('verificationid')}");
+      print("Sms${smsCode}");
       AuthCredential credential = PhoneAuthProvider.credential(
-          verificationId: verificationId!, smsCode: smsCode);
+          verificationId: verificationId, smsCode: smsCode);
 
       await auth.signInWithCredential(credential).then((value) async {
         if (value.user != null) {
           var user = auth.currentUser!;
-
-          user.getIdToken().then((ftoken) async {
-            await prefs.setString('firebaseToken', ftoken!);
-          });
+          print("vreification success");
+           
+          String? firebaseToken = await user.getIdToken();
+          print(user.getIdToken());
+          if(login){
+            // ref .read(authprovider.notifier).loginOtp(context,int.parse(smsCode),firebaseToken, ref);
+          } else{
+            ref.read(authprovider.notifier).registerUser(context,username,email,phoneNumber,password,ref);
+          }
+          
+        } else{
+          print("vreification failed");
         }
       });
 
       loadingState.state = false;
     } catch (e) {
+      print("Catch${e}");
       loadingState.state = false;
       if (e is PlatformException) {
         PlatformException exception = e;

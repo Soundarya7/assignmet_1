@@ -20,146 +20,225 @@ TextEditingController _edtxtpassword = TextEditingController();
 TextEditingController _edtxtNum = TextEditingController();
 
 class _SecondScreenState extends State<SecondScreen> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-   WidgetsBinding.instance.addPostFrameCallback((_) {
-      _showBottomSheet(context);
-    });
-  }
-   void _showBottomSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (BuildContext context) {
-        return SingleChildScrollView(
-          child: Padding(
-          padding: const EdgeInsets.all(32.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CoustTextfield(
-                controller: _edtxtMail,
-                inputtype: TextInputType.emailAddress,
-                hint: "Mail",
-                suffixIcon: const Icon(Icons.person),
-                radius: 8.0,
-                width: 10,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              CoustTextfield(
-                controller: _edtxtName,
-                inputtype: TextInputType.name,
-                hint: "Name",
-                radius: 8,
-                width: 10,
-              ), const SizedBox(
-                height: 10,
-              ),
-               CoustTextfield(
-                controller: _edtxtpassword,
-                password: true,
-                hint: "Password",
-                radius: 8,
-                width: 10,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: CoustTextfield(
-                      controller: _edtxtNum,
-                      inputtype: TextInputType.phone,
-                      hint: "Phone Number",
-                      radius: 8,
-                      width: 10,
-                    ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Consumer(
-                      builder: (context, ref, child) {
-                        var loaded = ref.watch(loadingProvider);
-                        return CoustEvalButton(
-                          onPressed: () {
-                            ref
-                                .read(phoneAuthProvider.notifier)
-                                .phoneAuth(context, _edtxtNum.text.trim(), ref);
-                          },
-                          buttonName: "Verify",
-                          radius: 8,
-                          width: double.infinity,
-                          FontSize: 20,
-                          isLoading: loaded,
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Consumer(
-                builder: (BuildContext context, WidgetRef ref, Widget? child)
-                 { var verfication = ref.watch(phoneAuthProvider);
-                 
-                  return
-                  verfication.vrfCompleted == true? 
-                  const Row(children: [Expanded(flex:1,child: 
-                                              OTPTextField(length: 6,),
-                                              ),
-                                              ],):Container();
-                                               },
-              ),
-                                            const SizedBox(
-                height: 10,
-              ),
-              SizedBox(
-                width: double.infinity,
-                child: Consumer(
-                  builder: (BuildContext context, WidgetRef ref, Widget? child) { return  CoustEvalButton(
-                      onPressed: () {ref .read(phoneAuthProvider.notifier).signInWithPhoneNumber("",context,ref,_edtxtNum.text.trim());},
-                      FontSize: 20,
-                      radius: 8,
-                      width: double.infinity,
-                      buttonName: "Register"); },
-                 
-                ),
-              ),
-            ],
-          ),
-                ),
-        );
-      },
-    );
-  }
-
+  final _validationkey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-  
-      body: SingleChildScrollView(
-        child: Align(
-          alignment: Alignment.center,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Center(
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Container(
                 child: Heading(
                   sText1: "",
                   sText2: "Register an Account",
                   bVisibil: false,
                 ),
               ),
-            ],
-          ),
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30.0),
+                  topRight: Radius.circular(30.0),
+                ),
+                child: Container(
+                  color: Colors.white,
+                  child: Padding(
+                    padding: const EdgeInsets.all(32.0),
+                    child: Form(
+                      key: _validationkey,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CoustTextfield(
+                            controller: _edtxtMail,
+                            inputtype: TextInputType.emailAddress,
+                            hint: "Mail",
+                            suffixIcon: const Icon(Icons.person),
+                            radius: 8.0,
+                            width: 10,
+                            validator: (_edtxtMail) {
+                              final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+                              if (_edtxtMail == null || _edtxtMail.isEmpty) {
+                                return 'Please enter an email address';
+                              } else if (!emailRegex.hasMatch(_edtxtMail)) {
+                                return 'Please enter a valid email address';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          CoustTextfield(
+                            controller: _edtxtName,
+                            inputtype: TextInputType.name,
+                            hint: "Name",
+                            radius: 8,
+                            width: 10,
+                            validator: (_edtxtName) {
+                              if (_edtxtName == null || _edtxtName.isEmpty) {
+                                return 'Please enter an Name';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          CoustTextfield(
+                            controller: _edtxtpassword,
+                            password: true,
+                            hint: "Password",
+                            radius: 8,
+                            width: 10,
+                            validator: (_edtxtpassword) {
+                              if (_edtxtpassword == null ||
+                                  _edtxtpassword.isEmpty) {
+                                return 'Please enter an password';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 1,
+                                child: CoustTextfield(
+                                  controller: _edtxtNum,
+                                  inputtype: TextInputType.phone,
+                                  hint: "Phone Number",
+                                  radius: 8,
+                                  width: 10,
+                                  validator: (_edtxtNum) {
+                                    if (_edtxtNum == null ||
+                                        _edtxtNum.isEmpty) {
+                                      return 'Please enter an Mobile Number';
+                                    }
+                                    if (_edtxtNum.length < 13) {
+                                      return 'Please enter valid Mobile Number with zip code (+91)';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: Consumer(
+                                  builder: (context, ref, child) {
+                                    var loaded = ref.watch(loadingProvider);
+                                    return CoustEvalButton(
+                                      onPressed: loaded == true
+                                          ? null
+                                          : () {
+                                              ref
+                                                  .read(phoneAuthProvider
+                                                      .notifier)
+                                                  .phoneAuth(
+                                                      context,
+                                                      _edtxtNum.text.trim(),
+                                                      ref);
+                                            },
+                                      buttonName: "Verify",
+                                      radius: 8,
+                                      width: double.infinity,
+                                      FontSize: 20,
+                                      isLoading: loaded,
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Consumer(
+                            builder: (BuildContext context, WidgetRef ref,
+                                Widget? child) {
+                              var verfication = ref.watch(phoneAuthProvider);
+
+                              return verfication.vrfCompleted == true
+                                  ? Row(
+                                      children: [
+                                        Expanded(
+                                          flex: 1,
+                                          child: Consumer(
+                                            builder: (BuildContext context,
+                                                WidgetRef ref, Widget? child) {
+                                              return OTPTextField(
+                                                onChanged: (value) {
+                                                  print("Otp Value ${value}");
+                                                  ref
+                                                      .read(phoneAuthProvider
+                                                          .notifier)
+                                                      .updateOtp(value);
+                                                },
+                                                length: 6,
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  : Container();
+                            },
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: Consumer(
+                              builder: (BuildContext context, WidgetRef ref,
+                                  Widget? child) {
+                                var loader = ref.watch(loadingProvider2);
+                                return CoustEvalButton(
+                                  onPressed: loader == true
+                                      ? null
+                                      : () {
+                                          if (_validationkey.currentState!
+                                              .validate()) {
+                                            // print("OTP: ${ref.read(phoneAuthProvider).otp==null?"Null":ref.read(phoneAuthProvider).otp}");
+                                            ref
+                                                .read(
+                                                    phoneAuthProvider.notifier)
+                                                .signInWithPhoneNumber(
+                                                    ref
+                                                        .read(phoneAuthProvider)
+                                                        .otp!,
+                                                    context,
+                                                    ref,
+                                                    _edtxtNum.text.trim(),false,
+                                                   password:  _edtxtpassword.text.trim(),
+                                                  email:   _edtxtMail.text.trim(),
+                                                   username:  _edtxtName.text.trim());
+                                          }
+                                        },
+                                  FontSize: 20,
+                                  radius: 8,
+                                  width: double.infinity,
+                                  buttonName: "Register",
+                                  isLoading: loader,
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            )
+          ],
         ),
       ),
     );

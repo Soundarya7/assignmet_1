@@ -15,7 +15,9 @@ class CoustTextfield extends StatefulWidget {
       this.radius,
       this.width,
       this.iLength,
-      this.password = false});
+      this.password = false,
+      this.validator,
+      this.onChanged});
   TextEditingController? controller;
   final TextInputType? inputtype;
   final String? hint;
@@ -27,6 +29,8 @@ class CoustTextfield extends StatefulWidget {
   final double? width;
   final int? iLength;
   final bool? password;
+  final String? Function(String?)? validator;
+  final String? Function(String?)? onChanged;
   @override
   State<CoustTextfield> createState() => _CoustTextfieldState();
 }
@@ -35,6 +39,8 @@ class _CoustTextfieldState extends State<CoustTextfield> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onChanged: widget.onChanged ,
+      validator: widget.validator,
       controller: widget.controller,
       inputFormatters: [
         LengthLimitingTextInputFormatter(widget.iLength),

@@ -15,7 +15,7 @@ class Heading extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: [
+      children: [ 
         const Text("BanquetBookz",
             style: TextStyle(color: Colors.white, fontSize: 30)),
         Visibility(

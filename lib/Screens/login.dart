@@ -1,10 +1,16 @@
+import 'dart:async';
+
+import 'package:assignmet_1/Providers/auth.dart';
 import 'package:assignmet_1/Providers/loaded.dart';
+import 'package:assignmet_1/Providers/phoneauthnotifier.dart';
 import 'package:assignmet_1/Widgets/evaluatedbutton.dart';
 import 'package:assignmet_1/Widgets/text.dart';
 import 'package:assignmet_1/Widgets/textfield.dart';
 import 'package:assignmet_1/Widgets/heading.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:otp_text_field/otp_field.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,165 +20,280 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  String sBtnName = "SendOtp";
-  bool bLogin = false;
+// Function to check if a string is a valid email
+  bool isValidEmail(String value) {
+    final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+    return emailRegex.hasMatch(value);
+  }
+
+  // Function to check if a string is a valid number
+  bool isValidNumber(String value) {
+    final numberRegex = RegExp(r'^\d+$');
+    return numberRegex.hasMatch(value);
+  }
+
+  String sBtnName = "SendOtp"; //Button Name
+  bool bOtp = false; // check for valid mobile num
+  late String sOtp;
+
+  final _validationkey = GlobalKey<FormState>();
+
+  bool _isButtonDisabled = true;
+  int _start = 30; // 30 seconds countdown
+  late Timer _timer;
+
+  void startTimer() {
+    _isButtonDisabled = true;
+    _start = 30;
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (_start == 0) {
+        setState(() {
+          _isButtonDisabled = false;
+          timer.cancel();
+        });
+      } else {
+        setState(() {
+          _start--;
+        });
+      }
+    });
+  }
+
+  void resendOTP() {
+    // Add your OTP resend logic here
+    print("OTP Resent");
+    startTimer();
+  }
+
   void _onRegistration(BuildContext context) {
     Navigator.of(context).pushNamed('/second');
   }
 
-  // ignore: non_constant_identifier_names
-  // void _OnPressedOTP(BuildContext context){
-  //     if (bVisibility== true){
-  //         Navigator.of(context).pushNamed('/venue');
-  //     }
-  //     if(_edtxtOtp.text.length == 10){
-  //       bVisibility = true;
-  //       sBtnName = "Login";
-  //       setState(() {
-  //       });
-  //     }
-
-  // }
-
   final bottomSheetHeightNotifier = ValueNotifier<double>(0.0);
 
-  final TextEditingController _edtxtOtp = TextEditingController();
+  final TextEditingController _edtxtNum = TextEditingController();
+  final TextEditingController _edtxtpwd = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomSheet: Padding(
-        padding: const EdgeInsets.all(32.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CoustTextfield(
-                iLength: 10,
-                controller: _edtxtOtp,
-                inputtype: TextInputType.phone,
-                hint: "Phone Number",
-                suffixIcon: Icon(Icons.person),
-                radius: 8.0,
-                width: 10),
-            const SizedBox(
-              height: 20,
-            ),
-            Consumer(
-              builder: (BuildContext context, WidgetRef ref, Widget? child) {
-                var isVisible = ref.watch(loadingProvider);
-                return Column(
-                  children: [
-                    isVisible == true
-                        ? Row(
-                            children: [
-                              Expanded(
-                                  flex: 1,
-                                  child: CoustTextfield(
-                                      iLength: 1,
-                                      inputtype: TextInputType.phone,
-                                      hint: "",
-                                      radius: 8.0,
-                                      width: 10)),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(
-                                  flex: 1,
-                                  child: CoustTextfield(
-                                      iLength: 1,
-                                      inputtype: TextInputType.phone,
-                                      hint: "",
-                                      radius: 8.0,
-                                      width: 10)),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(
-                                  flex: 1,
-                                  child: CoustTextfield(
-                                      iLength: 1,
-                                      inputtype: TextInputType.phone,
-                                      hint: "",
-                                      radius: 8.0,
-                                      width: 10)),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(
-                                  flex: 1,
-                                  child: CoustTextfield(
-                                      iLength: 1,
-                                      inputtype: TextInputType.phone,
-                                      hint: "",
-                                      radius: 8.0,
-                                      width: 10)),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              const Text("Resend Otp:")
-                            ],
-                          )
-                        : Container(),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    SizedBox(
-                      height: 50,
-                      width: double.infinity,
-                      child: CoustEvalButton(
-                        onPressed: () {
-                          ref.read(loadingProvider.notifier).state = !isVisible;
-                          if (bLogin == true) {
-                            Navigator.of(context).pushNamed('/venue');
-                          } else {
-                            if (ref.watch(loadingProvider) == true) {
-                              sBtnName = "Login";
-                              bLogin = true;
-                            } else {
-                              sBtnName = "SendOtp";
-                            }
-                          }
-                        },
-                        buttonName: sBtnName,
-                        width: double.infinity,
-                        radius: 8,
-                        FontSize: 20,
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            const coustText(
-              sName: "Don't have an account?",
-              Textsize: 15,
-            ),
-            TextButton(
-                onPressed: () {
-                  _onRegistration(context);
-                },
-                child: const Text(
-                  "Register here",
-                  style: TextStyle(
-                      decoration: TextDecoration.underline, fontSize: 15),
-                ))
-          ],
-        ),
-      ),
-      body: const Center(
+      body: Center(
         child: Column(
           children: <Widget>[
             Expanded(
-              flex: 1,
-              child: Heading(
-                sText1: "Welcome!",
-                sText2: "Please login to your Account",
-                bVisibil: true,
+              child: Container(
+                child: const Heading(
+                  sText1: "Welcome!",
+                  sText2: "Please login to your Account",
+                  bVisibil: true,
+                ),
               ),
             ),
-            //Heading(sText1: "",sText2: "Register an Account"),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(30.0),
+                  topRight: Radius.circular(30.0),
+                ),
+                child: Container(
+                  color: Colors.white,
+                  child: Padding(
+                    padding: const EdgeInsets.all(32.0),
+                    child: Form(
+                      key: _validationkey,
+                      child: Consumer(
+                        builder: (BuildContext context, WidgetRef ref,
+                            Widget? child) {
+                          sBtnName = ref.watch(
+                              buttonTextProvider); // get button name from provider
+                          bOtp = ref.watch(
+                              VerifyOtp); // get button name from provider
+                          var isPwdVisible =
+                              ref.watch(enablepasswaorProvider); // Get provider
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              CoustTextfield(
+                                controller: _edtxtNum,
+                                inputtype: TextInputType.emailAddress,
+                                hint: "Phone Number/Mail Id",
+                                suffixIcon: const Icon(Icons.person),
+                                radius: 8.0,
+                                width: 10,
+                                onChanged: (_edtxtNum) {
+                                  if (_edtxtNum == null || _edtxtNum.isEmpty) {
+                                    ref
+                                            .read(enablepasswaorProvider.notifier)
+                                            .state =
+                                        false; // If num textfield is null invisble pwd field
+                                  } else {
+                                    if (isValidNumber(_edtxtNum)) {
+                                      if (_edtxtNum.length >= 10) {
+                                        //if valid mobile num
+                                        //ref.read(enablepasswaorProvider.notifier) .state = true;
+                                      }
+                                      ref
+                                              .read(buttonTextProvider.notifier)
+                                              .state =
+                                          "Send OTP"; // Set Name for button based on textfield content
+                                    } else if (isValidEmail(_edtxtNum)) {
+                                      ref
+                                          .read(enablepasswaorProvider.notifier)
+                                          .state = true;
+                                      ref
+                                          .read(buttonTextProvider.notifier)
+                                          .state = "Login";
+                                    } else {
+                                      ref
+                                          .read(buttonTextProvider.notifier)
+                                          .state = "Send OTP";
+                                    }
+                                  }
+
+                                  return null;
+                                },
+                                validator: (_edtxtNum) {
+                                  if (_edtxtNum == null || _edtxtNum.isEmpty) {
+                                    return 'Please enter a valid email address or number';
+                                  }
+                                  if (isValidNumber(_edtxtNum)) {
+                                    print(
+                                        "num:" + "${isValidNumber(_edtxtNum)}");
+                                    if (_edtxtNum.length < 10) {
+                                      return 'Enter valid Mobile Number';
+                                    } else {
+                                      print("elsel:${_edtxtNum.length}");
+                                      return null;
+                                    }
+                                  } else if (!isValidEmail(_edtxtNum)) {
+                                    print(
+                                        "mail:" + "${isValidEmail(_edtxtNum)}");
+                                    return "Pleasee enter valid emial Id";
+                                  } else {
+                                    print("else2:${_edtxtNum.length}");
+                                    return null;
+                                  }
+                                },
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Column(
+                                children: [
+                                  isPwdVisible == true
+                                      ? sBtnName == "Login"
+                                          ? Container(
+                                              child: CoustTextfield(
+                                                hint: "Password",
+                                                suffixIcon:
+                                                    const Icon(Icons.password),
+                                                radius: 8.0,
+                                                width: 10,
+                                                validator: (_edtxtpwd) {
+                                                  if (_edtxtpwd == null ||
+                                                      _edtxtpwd.isEmpty) {
+                                                    return 'Please enter password';
+                                                  }
+                                                },
+                                              ),
+                                            )
+                                          : Row(
+                                              children: [
+                                                Expanded(
+                                                  flex: 1,
+                                                  child: OTPTextField(
+                                                    onChanged: (value) {
+                                                      //check_mobile_exists (Using post ) 200
+                                                      print(
+                                                          "Otp Value ${value}");
+                                                      sOtp = value;
+                                                    },
+                                                    length: 6,
+                                                  ),
+                                                ),
+                                                TextButton(
+                                                  onPressed: _isButtonDisabled
+                                                      ? null
+                                                      : resendOTP,
+                                                  child: Text('Resend OTP'),
+                                                ),
+                                              ],
+                                            )
+                                      : Container(),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  SizedBox(
+                                    height: 50,
+                                    width: double.infinity,
+                                    child: CoustEvalButton(
+                                      onPressed: () {
+                                        if (_validationkey.currentState!
+                                            .validate()) {
+                                          if ((isPwdVisible == false) &&
+                                              (sBtnName == "Send OTP")) {
+                                            // if Mobilenumber entered
+                                            ref
+                                                .read(authprovider.notifier)
+                                                .numCheck(context,
+                                                    _edtxtNum.text.trim(), ref);
+                                          } else if ((bOtp == true) &&
+                                              (sBtnName == "Log in")) {
+                                            //received otp and changed the sent otp button to login
+                                            // Send Vefcation code
+                                          
+                                            ref
+                                                .read(
+                                                    authprovider.notifier)
+                                                .loginOtp(context,_edtxtpwd.toString().trim(),ref);
+        
+                                          } else if ((isPwdVisible == true) &&
+                                              (sBtnName == "Login")) {
+                                            // password check
+                                            Navigator.of(context)
+                                                .pushNamed('/venue');
+                                          } else {
+                                            print(
+                                                "visible: ${isPwdVisible}, pwd: ${sBtnName}");
+                                          }
+                                        }
+                                      },
+                                      buttonName:
+                                          (ref.watch(buttonTextProvider)),
+                                      width: double.infinity,
+                                      radius: 8,
+                                      FontSize: 20,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 30,
+                              ),
+                              const coustText(
+                                sName: "Don't have an account?",
+                                Textsize: 15,
+                              ),
+                              TextButton(
+                                  onPressed: () {
+                                    _onRegistration(context);
+                                  },
+                                  child: const Text(
+                                    "Register here",
+                                    style: TextStyle(
+                                        decoration: TextDecoration.underline,
+                                        fontSize: 15),
+                                  ))
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            )
           ],
         ),
       ),
