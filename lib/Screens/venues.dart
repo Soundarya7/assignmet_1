@@ -1,4 +1,5 @@
 import 'package:assignmet_1/Colors/coustcolors.dart';
+import 'package:assignmet_1/Widgets/bottomnavigation.dart';
 import 'package:assignmet_1/models/venues_listmodel.dart';
 import 'package:flutter/material.dart';
 
@@ -11,23 +12,13 @@ class Venuscreen extends StatefulWidget {
 }
 
 class _VenuscreenState extends State<Venuscreen> {
-  List<BottomNavigationBarItem> botmnav_list = [];
   final List<VenuesListmodel> _items = [];
-  int nav_index = 1; // Setting current index to 1 to select search by default
+  
 
   @override
   void initState() {
     super.initState();
-    botmnav_list = [];
-    botmnav_list.add(
-        const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'));
-    botmnav_list.add(const BottomNavigationBarItem(
-        icon: Icon(Icons.search), label: 'Search'));
-    botmnav_list.add(const BottomNavigationBarItem(
-        icon: Icon(Icons.person_2_rounded), label: 'Manager'));
-    botmnav_list.add(const BottomNavigationBarItem(
-        icon: Icon(Icons.settings), label: 'Settings'));
-
+   
     for (int i = 0; i < 1; i++) {
       _items.add(VenuesListmodel("Swagath Grand", 'images/flutter.jpg', 3.5, 84,
           'Bachupally, Hyderabad\nAug 25, 2023'));
@@ -38,19 +29,7 @@ class _VenuscreenState extends State<Venuscreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: CoustColors.colrFill,
-      bottomNavigationBar: BottomNavigationBar(
-        items: botmnav_list,
-        currentIndex: nav_index,
-        onTap: (ind) {
-          switch(ind){
-            case 0:  //Home
-            break;
-            case 1:// Search
-            break;
-            
-          }
-        },
-      ),
+      bottomNavigationBar: CoustNavigation(),
       body: Column(
         children: [
           Padding(
@@ -113,12 +92,12 @@ class _VenuscreenState extends State<Venuscreen> {
                               Row(
                                 children: [
                                   Container(),
-                                  // Image.asset(
-                                  //   "images/flutter.jpg",
-                                  //   height: 50,
-                                  //   width: 50,
-                                  //   fit: BoxFit.fill,
-                                  // ),
+                                  Image.asset(
+                                    item.imagePath,
+                                    height: 50,
+                                    width: 50,
+                                    fit: BoxFit.fill,
+                                  ),
                                   // Image.network(
                                   //   item.image,
                                   //   width: 50,

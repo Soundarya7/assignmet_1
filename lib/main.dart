@@ -1,4 +1,5 @@
 import 'package:assignmet_1/Colors/coustcolors.dart';
+import 'package:assignmet_1/Providers/auth.dart';
 import 'package:assignmet_1/Screens/login.dart';
 import 'package:assignmet_1/Screens/registration.dart';
 import 'package:assignmet_1/Screens/venudetails.dart';
@@ -44,10 +45,32 @@ class MyApp extends StatelessWidget {
             unselectedItemColor: CoustColors.colrSubText,
           )),
       routes: {
-        '/': (BuildContext context) {
-          return const LoginScreen();
-        },
-        '/second': (BuildContext context) {
+        '/': (context) {
+                  return Consumer(
+                    builder: (context, ref, child) {
+                      final authState = ref.watch(authprovider);
+                      // Check if the user is authenticated and profile is complete
+                  
+                      // If the user is not authenticated, attempt auto-login
+                      return FutureBuilder(
+                        future: ref.watch(authprovider.notifier).tryAutoLogin(),
+                        builder: (context, snapshot) {
+                          print("print circular");
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Center(child: const CircularProgressIndicator()); // Show SplashScreen while waiting
+                          } else {
+                            // Based on auto-login result, navigate to appropriate screen
+                            return snapshot.data == true
+                                ? Venuscreen()//Welcome page
+                                :LoginScreen(); //Login page
+                          }
+                        },
+                      );
+                    },
+                  );
+                },
+        '/registration': (BuildContext context) {
           return const SecondScreen();
         },
         '/venue': (BuildContext context) {

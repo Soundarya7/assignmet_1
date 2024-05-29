@@ -245,8 +245,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                           
                                             ref
                                                 .read(
-                                                    authprovider.notifier)
-                                                .loginOtp(context,_edtxtpwd.toString().trim(),ref);
+                                                    phoneAuthProvider.notifier)
+                                                .signInWithPhoneNumber(sOtp,context,ref,_edtxtNum.text.trim(),true);
         
                                           } else if ((isPwdVisible == true) &&
                                               (sBtnName == "Login")) {

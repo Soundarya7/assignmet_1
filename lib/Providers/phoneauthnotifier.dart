@@ -127,7 +127,7 @@ class PhoneAuthNotifier extends StateNotifier<PhoneAuthState> {
           String? firebaseToken = await user.getIdToken();
           print(user.getIdToken());
           if(login){
-            // ref .read(authprovider.notifier).loginOtp(context,int.parse(smsCode),firebaseToken, ref);
+             ref .read(authprovider.notifier).loginOtp(context,firebaseToken, ref);
           } else{
             ref.read(authprovider.notifier).registerUser(context,username,email,phoneNumber,password,ref);
           }
