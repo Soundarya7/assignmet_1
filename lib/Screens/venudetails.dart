@@ -10,7 +10,7 @@ class VenuDetailsScreen extends StatefulWidget {
 
 class _VenuDetailsScreenState extends State<VenuDetailsScreen> {
   String sName = "Swagath Grand banquet hall";
-  String imagePath= "images/flutter.jpg";
+  String imagePath = "images/flutter.jpg";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -167,25 +167,45 @@ class _VenuDetailsScreenState extends State<VenuDetailsScreen> {
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 8.0),
-                  Row(
-                    children: [
-                      Icon(Icons.star, color: Colors.amber),
-                      Icon(Icons.star, color: Colors.amber),
-                      Icon(Icons.star, color: Colors.amber),
-                      Icon(Icons.star_half, color: Colors.amber),
-                      Icon(Icons.star_border, color: Colors.amber),
-                      SizedBox(width: 8.0),
-                      Text('3.6 out of 5'),
-                      SizedBox(width: 8.0),
-                      Text('85 total ratings'),
-                      Spacer(),
-                      IconButton(
-                        icon: Icon(Icons.arrow_forward),
-                        onPressed: () {
-                          // Handle view more reviews
-                        },
-                      ),
-                    ],
+                  Container(
+                    color: Colors.white,
+                    width: MediaQuery.of(context).size.width,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                           mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.star, color: Colors.amber),
+                            Icon(Icons.star, color: Colors.amber),
+                            Icon(Icons.star, color: Colors.amber),
+                            Icon(Icons.star_half, color: Colors.amber),
+                            Icon(Icons.star_border, color: Colors.amber),
+                            SizedBox(width: 8.0),
+                           
+                          ],
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                           mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(width: 20,),
+                             Text('3.6 out of 5'),
+                            SizedBox(width: 8.0),
+                            Text('85 total ratings'),
+                            Spacer(),
+                            IconButton(
+                              icon: Icon(Icons.arrow_forward),
+                              onPressed: () {
+                                // Handle view more reviews
+                              },
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                   SizedBox(height: 16.0),
                   Text(
@@ -237,6 +257,7 @@ class ReviewCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Colors.white,
       margin: const EdgeInsets.symmetric(vertical: 8.0),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
