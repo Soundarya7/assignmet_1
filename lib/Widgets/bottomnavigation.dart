@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 
-class CoustNavigation extends StatefulWidget{
-  const CoustNavigation({super.key});
+class CoustNavigation extends StatefulWidget {
+  // ignore: non_constant_identifier_names
+   CoustNavigation({super.key,required this.nav_index});
+   int nav_index;
 
   @override
   State<CoustNavigation> createState() => _CoustNavigationState();
 }
 
 class _CoustNavigationState extends State<CoustNavigation> {
-   List<BottomNavigationBarItem> botmnav_list = [];
-    int nav_index = 1; // Setting current index to 1 to select search by default
-    
-@override
+  List<BottomNavigationBarItem> botmnav_list = [];
+  //int nav_index = 1; // Setting current index to 1 to select search by default
+
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -28,19 +30,27 @@ class _CoustNavigationState extends State<CoustNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar( items: botmnav_list,
-        currentIndex: nav_index,
+    return BottomNavigationBar(
+        items: botmnav_list,
+        currentIndex: widget.nav_index,
         onTap: (ind) {
-          switch(ind){
-            case 0:  //Home
-            break;
-            case 1:// Search
-            break;
-            case 2:// Manager
-            break;
-            case 3:// Settings
-            break;
+          setState(() {
+             widget.nav_index = ind;
+          });
+          print("${widget.nav_index}");
+          switch (widget.nav_index) {
+            case 0: //Home
+               Navigator.pushNamed(context, '/home');
+              break;
+            case 1: // Search
+            print("case1");
+               Navigator.pushNamed(context, '/venue');
+              break;
+            case 2: // Manager
+              break;
+            case 3: // Settings
+              break;
+          }
+        });
   }
-});
-  }
-} 
+}

@@ -29,7 +29,7 @@ class _VenuscreenState extends State<Venuscreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: CoustColors.colrFill,
-      bottomNavigationBar: CoustNavigation(),
+      bottomNavigationBar: CoustNavigation(nav_index: 1,),
       body: Column(
         children: [
           Padding(

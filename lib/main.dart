@@ -1,5 +1,6 @@
 import 'package:assignmet_1/Colors/coustcolors.dart';
 import 'package:assignmet_1/Providers/auth.dart';
+import 'package:assignmet_1/Screens/home.dart';
 import 'package:assignmet_1/Screens/login.dart';
 import 'package:assignmet_1/Screens/registration.dart';
 import 'package:assignmet_1/Screens/venudetails.dart';
@@ -45,7 +46,7 @@ class MyApp extends StatelessWidget {
             unselectedItemColor: CoustColors.colrSubText,
           )),
       routes: {
-        '/': (context) {
+        '/': (context) {   //Loginpage
                   return Consumer(
                     builder: (context, ref, child) {
                       final authState = ref.watch(authprovider);
@@ -62,7 +63,7 @@ class MyApp extends StatelessWidget {
                           } else {
                             // Based on auto-login result, navigate to appropriate screen
                             return snapshot.data == true
-                                ? Venuscreen()//Welcome page
+                                ? HomeScreen()//Welcome page
                                 :LoginScreen(); //Login page
                           }
                         },
@@ -70,8 +71,11 @@ class MyApp extends StatelessWidget {
                     },
                   );
                 },
-        '/registration': (BuildContext context) {
+        '/second': (BuildContext context) {  //registration page
           return const SecondScreen();
+        },
+        '/home': (BuildContext context) {  //welcome page
+          return const HomeScreen();
         },
         '/venue': (BuildContext context) {
           return const Venuscreen();

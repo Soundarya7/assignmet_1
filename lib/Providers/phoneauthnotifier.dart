@@ -139,7 +139,7 @@ class PhoneAuthNotifier extends StateNotifier<PhoneAuthState> {
 
       loadingState.state = false;
     } catch (e) {
-      print("Catch${e}");
+      print("Catchs123R${e}");
       loadingState.state = false;
       if (e is PlatformException) {
         PlatformException exception = e;
@@ -164,6 +164,22 @@ class PhoneAuthNotifier extends StateNotifier<PhoneAuthState> {
 
         //showsnackbar(context, e.toString());
       }
+      showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text('Error'),
+                  content: Text('${e}'),
+                  actions: <Widget>[
+                    TextButton(
+                      child: const Text('OK'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    )
+                  ],
+                );
+              });
     }
     loadingState.state = false;
   }

@@ -7,7 +7,6 @@ import 'package:assignmet_1/Widgets/evaluatedbutton.dart';
 import 'package:assignmet_1/Widgets/text.dart';
 import 'package:assignmet_1/Widgets/textfield.dart';
 import 'package:assignmet_1/Widgets/heading.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:otp_text_field/otp_field.dart';
@@ -66,13 +65,12 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _onRegistration(BuildContext context) {
-    Navigator.of(context).pushNamed('/second');
+    Navigator.of(context).pushNamed('/');
   }
 
   final bottomSheetHeightNotifier = ValueNotifier<double>(0.0);
 
   final TextEditingController _edtxtNum = TextEditingController();
-  final TextEditingController _edtxtpwd = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -109,8 +107,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               buttonTextProvider); // get button name from provider
                           bOtp = ref.watch(
                               VerifyOtp); // get button name from provider
+
                           var isPwdVisible =
                               ref.watch(enablepasswaorProvider); // Get provider
+
+                          var loader = ref.watch(
+                              loadingProvider2); // to set circularprogress bar
                           return Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -228,7 +230,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                     height: 50,
                                     width: double.infinity,
                                     child: CoustEvalButton(
-                                      onPressed: () {
+                                      onPressed: loader == true
+                                      ? null
+                                      :  () {
                                         if (_validationkey.currentState!
                                             .validate()) {
                                           if ((isPwdVisible == false) &&
@@ -242,12 +246,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                               (sBtnName == "Log in")) {
                                             //received otp and changed the sent otp button to login
                                             // Send Vefcation code
-                                          
+
                                             ref
                                                 .read(
                                                     phoneAuthProvider.notifier)
-                                                .signInWithPhoneNumber(sOtp,context,ref,_edtxtNum.text.trim(),true);
-        
+                                                .signInWithPhoneNumber(
+                                                    sOtp,
+                                                    context,
+                                                    ref,
+                                                    _edtxtNum.text.trim(),
+                                                    true);
                                           } else if ((isPwdVisible == true) &&
                                               (sBtnName == "Login")) {
                                             // password check
@@ -259,6 +267,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           }
                                         }
                                       },
+                                      isLoading: loader,
                                       buttonName:
                                           (ref.watch(buttonTextProvider)),
                                       width: double.infinity,

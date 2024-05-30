@@ -54,6 +54,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     print("username: $username!");
     var userDetails = json.decode(response.body);
     print('booking response:$userDetails');
+    print('booking response Status Code:${response.statusCode}');
     switch (response.statusCode) {
       case 201:
         loadingState.state = false;
@@ -75,10 +76,26 @@ class AuthNotifier extends StateNotifier<AuthState> {
             );
           },
         );
-
+        Navigator.of(context).pushNamed('/');
         break;
-      case 500:
+      case 400:
         loadingState.state = false;
+        showDialog(
+            context: context!,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Failed'),
+                content: Text("$userDetails"),
+                actions: [
+                  ElevatedButton(
+                    child: const Text('OK'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            });
         break;
     }
     // Handle other status codes as needed
@@ -108,23 +125,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
         ref
             .read(phoneAuthProvider.notifier)
             .phoneAuth(context, "+91$phonenum", ref);
-        // showDialog(
-        //   context: context!,
-        //   builder: (BuildContext context) {
-        //     return AlertDialog(
-        //       title: const Text('Success'),
-        //       content: const Text('Registation successful'),
-        //       actions: [
-        //         ElevatedButton(
-        //           child: const Text('OK'),
-        //           onPressed: () {
-        //             Navigator.of(context).pop();
-        //           },
-        //         ),
-        //       ],
-        //     );
-        //   },
-        // );
 
         break;
       case 400:
@@ -149,6 +149,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
         );
 
         break;
+      
       case 500:
         loadingState.state = false;
         break;
@@ -192,7 +193,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
           'usertype': state.usertype,
         });
         await prefs.setString('userData', userData);
-        Navigator.of(context).pushNamed('/venue');
+        Navigator.of(context).pushNamed('/');
         break;
       case 400:
         loadingState.state = false;
@@ -218,6 +219,23 @@ class AuthNotifier extends StateNotifier<AuthState> {
         break;
       case 500:
         loadingState.state = false;
+        showDialog(
+          context: context!,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Error'),
+              content: Text("$userDetails"),
+              actions: [
+                ElevatedButton(
+                  child: const Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
         break;
     }
     // Handle other status codes as needed
