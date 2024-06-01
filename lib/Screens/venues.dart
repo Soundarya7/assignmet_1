@@ -1,5 +1,4 @@
 import 'package:assignmet_1/Colors/coustcolors.dart';
-import 'package:assignmet_1/Widgets/bottomnavigation.dart';
 import 'package:assignmet_1/models/venues_listmodel.dart';
 import 'package:flutter/material.dart';
 
@@ -29,7 +28,7 @@ class _VenuscreenState extends State<Venuscreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: CoustColors.colrFill,
-      bottomNavigationBar: CoustNavigation(nav_index: 1,),
+      //bottomNavigationBar: CoustNavigation(nav_index: 1,),
       body: Column(
         children: [
           Padding(

@@ -76,7 +76,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
             );
           },
         );
-        Navigator.of(context).pushNamed('/');
+        Navigator.of(context).pushNamed('/');  //Goto Login page if Registered succesfully
         break;
       case 400:
         loadingState.state = false;
@@ -113,8 +113,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
           'Content-Type':
               'application/json', // Set the content type to application/json
         },
-        body: json.encode({"mobileno": phonenum!}));
-    print("username: $phonenum!");
+        body: json.encode({"mobileno": phonenum}));
+    print("username: $phonenum");
     var userDetails = json.decode(response.body);
     print('booking response:$userDetails');
     switch (response.statusCode) {
@@ -193,7 +193,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
           'usertype': state.usertype,
         });
         await prefs.setString('userData', userData);
-        Navigator.of(context).pushNamed('/');
+        print('pushNamed //');
+        //Navigator.of(context).pushNamed('/');
         break;
       case 400:
         loadingState.state = false;
@@ -240,6 +241,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
     // Handle other status codes as needed
   }
+
+void clear() {
+    state = state.clear(); // Reset to initial state
+    state = state.copyWith();
+  }
+
 }
 
 final authprovider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {

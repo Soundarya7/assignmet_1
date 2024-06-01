@@ -1,17 +1,29 @@
+import 'package:assignmet_1/Screens/home.dart';
+import 'package:assignmet_1/Screens/settings.dart';
+import 'package:assignmet_1/Screens/venudetails.dart';
+import 'package:assignmet_1/Screens/venues.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class CoustNavigation extends StatefulWidget {
   // ignore: non_constant_identifier_names
-   CoustNavigation({super.key,required this.nav_index});
-   int nav_index;
+   CoustNavigation({super.key});
+  
 
   @override
   State<CoustNavigation> createState() => _CoustNavigationState();
 }
 
 class _CoustNavigationState extends State<CoustNavigation> {
+  final _pageOptions = [
+    HomeScreen(),
+    Venuscreen(),
+    VenuDetailsScreen(),
+    SettingsScreen(),
+    
+  ];
   List<BottomNavigationBarItem> botmnav_list = [];
-  //int nav_index = 1; // Setting current index to 1 to select search by default
+  int nav_index = 0; // Setting current index to 1 to select search by default
 
   @override
   void initState() {
@@ -30,27 +42,18 @@ class _CoustNavigationState extends State<CoustNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
+    return  Scaffold(
+      bottomNavigationBar:  BottomNavigationBar(
         items: botmnav_list,
-        currentIndex: widget.nav_index,
+        currentIndex: nav_index,
         onTap: (ind) {
           setState(() {
-             widget.nav_index = ind;
+             nav_index = ind;
           });
-          print("${widget.nav_index}");
-          switch (widget.nav_index) {
-            case 0: //Home
-               Navigator.pushNamed(context, '/home');
-              break;
-            case 1: // Search
-            print("case1");
-               Navigator.pushNamed(context, '/venue');
-              break;
-            case 2: // Manager
-              break;
-            case 3: // Settings
-              break;
-          }
-        });
+        }),
+      body: _pageOptions[nav_index],
+    );
+
+   
   }
 }

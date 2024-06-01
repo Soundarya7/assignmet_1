@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:otp_text_field/otp_field.dart';
 
-class SecondScreen extends StatefulWidget {
-  const SecondScreen({super.key});
+class RegistrationScreen extends StatefulWidget {
+  const RegistrationScreen({super.key});
 
   @override
-  State<SecondScreen> createState() => _SecondScreenState();
+  State<RegistrationScreen> createState() => _RegistrationScreenState();
 }
 
 TextEditingController _edtxtMail = TextEditingController();
@@ -19,7 +19,7 @@ TextEditingController _edtxtName = TextEditingController();
 TextEditingController _edtxtpassword = TextEditingController();
 TextEditingController _edtxtNum = TextEditingController();
 
-class _SecondScreenState extends State<SecondScreen> {
+class _RegistrationScreenState extends State<RegistrationScreen> {
   final _validationkey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -55,6 +55,7 @@ class _SecondScreenState extends State<SecondScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           CoustTextfield(
+                            isVisible: false,
                             controller: _edtxtMail,
                             inputtype: TextInputType.emailAddress,
                             hint: "Mail",
@@ -75,6 +76,7 @@ class _SecondScreenState extends State<SecondScreen> {
                             height: 10,
                           ),
                           CoustTextfield(
+                            isVisible: false,
                             controller: _edtxtName,
                             inputtype: TextInputType.name,
                             hint: "Name",
@@ -91,6 +93,7 @@ class _SecondScreenState extends State<SecondScreen> {
                             height: 10,
                           ),
                           CoustTextfield(
+                            isVisible: false,
                             controller: _edtxtpassword,
                             password: true,
                             hint: "Password",
@@ -112,6 +115,7 @@ class _SecondScreenState extends State<SecondScreen> {
                               Expanded(
                                 flex: 1,
                                 child: CoustTextfield(
+                                  isVisible: false,
                                   controller: _edtxtNum,
                                   inputtype: TextInputType.phone,
                                   hint: "Phone Number",
@@ -123,7 +127,7 @@ class _SecondScreenState extends State<SecondScreen> {
                                       return 'Please enter an Mobile Number';
                                     }
                                     if (_edtxtNum.length < 13) {
-                                      return 'Please enter valid Mobile Number with zip code (+91)';
+                                      return 'Please enter 10 digit Mobile Number';
                                     }
                                     return null;
                                   },

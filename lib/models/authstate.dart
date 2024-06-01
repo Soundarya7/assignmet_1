@@ -1,11 +1,11 @@
 class AuthState {
-  final String? profilePic;
-  final String? username;
-  final String? email;
-  final String? mobileno;
-  final String? gender;
-  final String? token;
-  final String? usertype;
+  late final String? profilePic;
+  late final String? username;
+  late final String? email;
+  late final String? mobileno;
+  late final String? gender;
+  late final String? token;
+  late final String? usertype;
 
   AuthState({
     this.profilePic,
@@ -53,6 +53,17 @@ class AuthState {
       gender: gender ?? this.gender,
       token: token ?? this.token,
       usertype: usertype ?? this.usertype,
+    );
+  }
+AuthState clear() {
+    return AuthState(
+      profilePic: null,
+      username: null,
+      email: null,
+      mobileno: null,
+      gender: null,
+      token: null,
+      usertype: null,
     );
   }
 }

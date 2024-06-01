@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:assignmet_1/Colors/coustcolors.dart';
-import 'package:assignmet_1/Widgets/bottomnavigation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -40,9 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: CoustColors.colrFill,
-      bottomNavigationBar: CoustNavigation(
-        nav_index: 0,
-      ),
+     
       body: Column(
         children: [
           Padding(

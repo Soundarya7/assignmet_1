@@ -65,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _onRegistration(BuildContext context) {
-    Navigator.of(context).pushNamed('/');
+    Navigator.of(context).pushNamed('/registration');
   }
 
   final bottomSheetHeightNotifier = ValueNotifier<double>(0.0);
@@ -117,6 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               CoustTextfield(
+                                isVisible: false,
                                 controller: _edtxtNum,
                                 inputtype: TextInputType.emailAddress,
                                 hint: "Phone Number/Mail Id",
@@ -187,6 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ? sBtnName == "Login"
                                           ? Container(
                                               child: CoustTextfield(
+                                                isVisible: false,
                                                 hint: "Password",
                                                 suffixIcon:
                                                     const Icon(Icons.password),

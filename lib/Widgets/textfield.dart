@@ -17,7 +17,9 @@ class CoustTextfield extends StatefulWidget {
       this.iLength,
       this.password = false,
       this.validator,
-      this.onChanged});
+      this.onChanged,
+      required this.isVisible,
+      this.title});
   TextEditingController? controller;
   final TextInputType? inputtype;
   final String? hint;
@@ -31,6 +33,8 @@ class CoustTextfield extends StatefulWidget {
   final bool? password;
   final String? Function(String?)? validator;
   final String? Function(String?)? onChanged;
+  final bool isVisible;
+  final String? title;
   @override
   State<CoustTextfield> createState() => _CoustTextfieldState();
 }
@@ -38,25 +42,41 @@ class CoustTextfield extends StatefulWidget {
 class _CoustTextfieldState extends State<CoustTextfield> {
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      onChanged: widget.onChanged ,
-      validator: widget.validator,
-      controller: widget.controller,
-      inputFormatters: [
-        LengthLimitingTextInputFormatter(widget.iLength),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Visibility(
+            visible: widget.isVisible,
+            child: Column(
+              children: [
+                Text(widget.title.toString()),
+                SizedBox(
+                  height: 5,
+                )
+              ],
+            )),
+        TextFormField(
+          onChanged: widget.onChanged,
+          validator: widget.validator,
+          controller: widget.controller,
+          inputFormatters: [
+            LengthLimitingTextInputFormatter(widget.iLength),
+          ],
+          keyboardType: widget.inputtype,
+          obscureText: widget.password!,
+          decoration: InputDecoration(
+            hintText: widget.hint,
+            suffixIcon: widget.suffixIcon,
+            suffixIconColor: widget.suficonColor,
+            prefixIcon: widget.prefixIcon,
+            prefixIconColor: widget.preiconColor,
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(widget.radius!)),
+                borderSide: BorderSide(width: widget.width!)),
+          ),
+        ),
       ],
-      keyboardType: widget.inputtype,
-      obscureText: widget.password!,
-      decoration: InputDecoration(
-        hintText: widget.hint,
-        suffixIcon: widget.suffixIcon,
-        suffixIconColor: widget.suficonColor,
-        prefixIcon: widget.prefixIcon,
-        prefixIconColor: widget.preiconColor,
-        border: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(widget.radius!)),
-            borderSide: BorderSide(width: widget.width!)),
-      ),
     );
   }
 }
