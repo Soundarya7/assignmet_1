@@ -126,7 +126,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                         _edtxtNum.isEmpty) {
                                       return 'Please enter an Mobile Number';
                                     }
-                                    if (_edtxtNum.length < 13) {
+                                    if (_edtxtNum.length < 10) {
                                       return 'Please enter 10 digit Mobile Number';
                                     }
                                     return null;

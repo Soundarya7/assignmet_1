@@ -124,7 +124,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
         ref.read(enablepasswaorProvider.notifier).state = true;
         ref
             .read(phoneAuthProvider.notifier)
-            .phoneAuth(context, "+91$phonenum", ref);
+            .phoneAuth(context, "$phonenum", ref);
 
         break;
       case 400:
@@ -135,7 +135,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: const Text('Error'),
-              content: Text("$userDetails"),
+              content: Text(cleanErrorMessage(userDetails)),
               actions: [
                 ElevatedButton(
                   child: const Text('OK'),
@@ -204,7 +204,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: const Text('Error'),
-              content: Text("$userDetails"),
+              content: Text(cleanErrorMessage(userDetails)),
+              //content: Text("$userDetails"),
               actions: [
                 ElevatedButton(
                   child: const Text('OK'),
@@ -225,7 +226,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: const Text('Error'),
-              content: Text("$userDetails"),
+              content: Text(cleanErrorMessage(userDetails)),
+              //content: Text("$userDetails"),
               actions: [
                 ElevatedButton(
                   child: const Text('OK'),
@@ -248,6 +250,18 @@ void clear() {
   }
 
 }
+ String cleanErrorMessage(String errorMessage) {
+    // Remove the "ERROR:" prefix
+    String cleanedMessage = errorMessage.replaceFirst('ERROR:', '');
+
+    // Remove the curly brackets
+    cleanedMessage = cleanedMessage.replaceAll(RegExp(r'[{}]'), '');
+
+    // Trim any extra whitespace
+    cleanedMessage = cleanedMessage.trim();
+
+    return cleanedMessage;
+  }
 
 final authprovider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   return AuthNotifier();

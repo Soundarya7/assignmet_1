@@ -60,9 +60,9 @@ class PhoneAuthNotifier extends StateNotifier<PhoneAuthState> {
 
     try {
       loadingState.state = true;
-
+      print("phonenum:$phoneNumber" );
       await auth.verifyPhoneNumber(
-        phoneNumber: phoneNumber,
+        phoneNumber: "+91$phoneNumber",
         verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async {
           loadingState.state = false;
 
@@ -190,7 +190,7 @@ class PhoneAuthNotifier extends StateNotifier<PhoneAuthState> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(title),
-          content: Text(message),
+          content: Text(cleanErrorMessage(message)),
           actions: <Widget>[
             TextButton(
               child: Text('OK'),
@@ -204,6 +204,18 @@ class PhoneAuthNotifier extends StateNotifier<PhoneAuthState> {
     );
 
     // Implement any additional logic as needed
+  }
+   String cleanErrorMessage(String errorMessage) {
+    // Remove the "ERROR:" prefix
+    String cleanedMessage = errorMessage.replaceFirst('ERROR:', '');
+
+    // Remove the curly brackets
+    cleanedMessage = cleanedMessage.replaceAll(RegExp(r'[{}]'), '');
+
+    // Trim any extra whitespace
+    cleanedMessage = cleanedMessage.trim();
+
+    return cleanedMessage;
   }
 }
 

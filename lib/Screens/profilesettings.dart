@@ -16,35 +16,34 @@ class ProfileSetingsScreen extends StatefulWidget {
 
 class _ProfileSetingsScreenState extends State<ProfileSetingsScreen> {
   final _validationkey = GlobalKey<FormState>();
-   String sUsername = "example1";
-    String smail = "example@email.com";
-    String snum = "1234567890";
+  String sUsername = "example1";
+  String smail = "example@email.com";
+  String snum = "1234567890";
   final TextEditingController _dobController = TextEditingController();
- // final TextEditingController nameController = TextEditingController(text: "Name");
-  
+  // final TextEditingController nameController = TextEditingController(text: "Name");
 
   @override
   void initState() {
     super.initState();
     _dobController.text =
         DateFormat('dd - MM - yyyy').format(DateTime(1990, 1, 1));
-        GetData();
-        
+    GetData();
   }
+
   Future<void> GetData() async {
-      final prefs = await SharedPreferences.getInstance();
-      final extractData =
-          json.decode(prefs.getString('userData')!) as Map<String, dynamic>;
-      String sname = extractData['username'];
-      String smailid = extractData['email'];
-      String snumber = extractData['mobileno'];
-      setState(() {
-        sUsername = sname;
-        smail = smailid;
-        snum = snumber;
-      });
-    }
-   
+    final prefs = await SharedPreferences.getInstance();
+    final extractData =
+        json.decode(prefs.getString('userData')!) as Map<String, dynamic>;
+    String sname = extractData['username'];
+    String smailid = extractData['email'];
+    String snumber = extractData['mobileno'];
+    setState(() {
+      sUsername = sname;
+      smail = smailid;
+      snum = snumber;
+    });
+  }
+
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -58,9 +57,11 @@ class _ProfileSetingsScreenState extends State<ProfileSetingsScreen> {
       });
     }
   }
- TextEditingController _edtxtMail = TextEditingController();
+
+  TextEditingController _edtxtMail = TextEditingController();
   TextEditingController _edtxtName = TextEditingController();
   TextEditingController _edtxtNum = TextEditingController();
+   TextEditingController _edtxtloc = TextEditingController(text: "Hyderabad");
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,7 +93,7 @@ class _ProfileSetingsScreenState extends State<ProfileSetingsScreen> {
                 padding: const EdgeInsets.all(30.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CoustTextfield(
                       isVisible: true,
@@ -154,7 +155,7 @@ class _ProfileSetingsScreenState extends State<ProfileSetingsScreen> {
                     const SizedBox(
                       height: 10,
                     ),
-                     Text("Date of Birth"),
+                    Text("Date of Birth"),
                     SizedBox(
                       height: 5,
                     ),
@@ -162,25 +163,32 @@ class _ProfileSetingsScreenState extends State<ProfileSetingsScreen> {
                       onTap: () {
                         _selectDate(context);
                       },
-                      controller:_dobController,
+                      controller: _dobController,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(
-                                Radius.circular(8)),
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
                             borderSide: BorderSide(width: 10)),
                       ),
                     ),
                     const SizedBox(
                       height: 10,
                     ),
-                    CoustTextfield(
-                      isVisible: true,
-                      title: "Location",
-                      controller: _edtxtNum,
-                      inputtype: TextInputType.phone,
-                      hint: "Hyderabad",
-                      radius: 8,
-                      width: 10,
+                    Text("Location"),
+                     const SizedBox(
+                  height: 5,
+                ),
+                    TextFormField(
+                      obscureText: false,
+                      onTap: () {
+                         Navigator.of(context).pushNamed('/location');
+                      },
+                      controller: _edtxtloc,
+                      decoration: const InputDecoration(
+                        hintText: "Hyderabad",
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                            borderSide: BorderSide(width: 10)),
+                      ),
                     ),
                     const SizedBox(
                       height: 10,

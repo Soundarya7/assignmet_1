@@ -1,6 +1,6 @@
 import 'package:assignmet_1/Screens/home.dart';
+import 'package:assignmet_1/Screens/managebooking.dart';
 import 'package:assignmet_1/Screens/settings.dart';
-import 'package:assignmet_1/Screens/venudetails.dart';
 import 'package:assignmet_1/Screens/venues.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +18,7 @@ class _CoustNavigationState extends State<CoustNavigation> {
   final _pageOptions = [
     HomeScreen(),
     Venuscreen(),
-    VenuDetailsScreen(),
+    ManageBookingScreen(),
     SettingsScreen(),
     
   ];

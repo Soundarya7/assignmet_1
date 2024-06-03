@@ -1,14 +1,14 @@
 import 'package:assignmet_1/Colors/coustcolors.dart';
 import 'package:assignmet_1/Providers/auth.dart';
-import 'package:assignmet_1/Screens/home.dart';
+import 'package:assignmet_1/Screens/location.dart';
 import 'package:assignmet_1/Screens/login.dart';
+import 'package:assignmet_1/Screens/managebooking.dart';
 import 'package:assignmet_1/Screens/paymenthistory.dart';
 import 'package:assignmet_1/Screens/notificationsettings.dart';
 import 'package:assignmet_1/Screens/profilesettings.dart';
 import 'package:assignmet_1/Screens/registration.dart';
-import 'package:assignmet_1/Screens/settings.dart';
+import 'package:assignmet_1/Screens/upcoming.dart';
 import 'package:assignmet_1/Screens/venudetails.dart';
-import 'package:assignmet_1/Screens/venues.dart';
 import 'package:assignmet_1/Widgets/bottomnavigation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -99,6 +99,15 @@ class MyApp extends ConsumerWidget {
         },
         '/notification_settings': (BuildContext context) {
           return  NotificationSettingsScreen();
+        },
+        '/manage_booking': (BuildContext context) {
+          return  ManageBookingScreen();
+        },
+        '/upcoming_booking': (BuildContext context) {
+          return  UpcomingbookingsScreen();
+        },
+        '/location': (BuildContext context) {
+          return  LocationScreen();
         },
         
         
