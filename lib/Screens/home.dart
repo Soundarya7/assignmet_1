@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:assignmet_1/Colors/coustcolors.dart';
+import 'package:assignmet_1/Providers/property.dart';
 import 'package:assignmet_1/models/venues_listmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,12 +20,13 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     GetData();
+   // PropertyNotifier().getProperties();
     for (int i = 0; i < 5; i++) {
       _rowitems.add(VenueCard(
           name: "Swagath Grand",
           location: 'Bachupally, Hyderabad\nAug 25, 2023'));
     }
-    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < 9; i++) {
       _items.add(VenuesListmodel("Swagath Grand", 'images/flutter.jpg', 3.5, 84,
           'Bachupally, Hyderabad\nAug 25, 2023'));
     }
@@ -45,309 +47,311 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: CoustColors.colrFill,
-      body: Container(
-        height: MediaQuery.sizeOf(context).height,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 32.0),
-              child: Container(
-                width: double.infinity,
-                height: 90,
-                decoration: const BoxDecoration(
-                    color: Color(0xFF6418C3),
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadiusDirectional.only(
-                        bottomEnd: Radius.circular(25),
-                        bottomStart: Radius.circular(25))),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 25),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text("Welcome Back",
-                              style: TextStyle(
-                                  color: CoustColors.colrEdtxt4, fontSize: 20)),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10.0),
-                            child: Text(sUsername,
-                                style: const TextStyle(
-                                    color: CoustColors.colrEdtxt4, fontSize: 16)),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Row(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 32.0),
+            child: Container(
+              width: double.infinity,
+              height: 90,
+              decoration: const BoxDecoration(
+                  color: Color(0xFF6418C3),
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadiusDirectional.only(
+                      bottomEnd: Radius.circular(25),
+                      bottomStart: Radius.circular(25))),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 25),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        const Text("Welcome Back",
+                            style: TextStyle(
+                                color: CoustColors.colrEdtxt4, fontSize: 20)),
                         Padding(
-                          padding: const EdgeInsets.only(right: 10.0),
-                          child: Container(
-                            height: 40,
-                            width: 40,
-                            decoration: const BoxDecoration(
-                                color: Colors.white,
-                                shape: BoxShape.rectangle,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5))),
-                            child: IconButton(
-                              icon: const Icon(Icons.notifications),
-                              color: CoustColors.colrHighlightedText,
-                              onPressed: () {
-                                 Navigator.of(context).pushNamed('/notification_settings');
-                                print("Notification Clicked");
-                              },
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 25.0),
-                          child: Container(
-                            height: 40,
-                            width: 40,
-                            decoration: const BoxDecoration(
-                                color: Colors.white,
-                                shape: BoxShape.rectangle,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5))),
-                            child: IconButton(
-                              icon: const Icon(Icons.person),
-                              color: CoustColors.colrHighlightedText,
-                              onPressed: () {
-                                 Navigator.of(context).pushNamed('/profile_settings');
-                                print("Person Clicked");
-                              },
-                            ),
-                          ),
+                          padding: const EdgeInsets.only(top: 10.0),
+                          child: Text(sUsername,
+                              style: const TextStyle(
+                                  color: CoustColors.colrEdtxt4, fontSize: 16)),
                         ),
                       ],
                     ),
-                  ],
-                ),
-              ),
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(left: 20.0, right: 20, top: 5),
-                      child: Text('Quick Access',
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          QuickAccessCard(
-                            icon: Icons.book,
-                            label: 'My Bookings',
-                          ),
-                          QuickAccessCard(
-                            icon: Icons.history,
-                            label: 'Payment History',
-                          ),
-                          QuickAccessCard(
-                            icon: Icons.account_balance_wallet,
-                            label: 'Wallets',
-                          ),
-                        ],
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 20.0, right: 20, top: 5),
-                      child: Text('Newly',
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold)),
-                    ),
-                    SizedBox(
-                      height: 200,
-                      child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: _rowitems.length,
-                          itemBuilder: (context, index) {
-                            final item = _rowitems[index];
-                            return Column(
-                              children: [
-                                Image.asset(
-                                  'images/flutter.jpg',
-                                  height: 100,
-                                  width: 100,
-                                  fit: BoxFit.fill,
-                                ),
-                                SizedBox(height: 8),
-                                Text(item.name,
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                                Text(item.location,
-                                    style: TextStyle(color: Colors.grey)),
-                              ],
-                            );
-                          }),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.only(left: 20.0, right: 20, top: 5),
-              child: Text('Recently viewed',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            ),
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    'images/flutter.jpg',
-                    height: 100,
-                    fit: BoxFit.fill,
                   ),
-                  Text("Swagath grand banquet Hall",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 10.0),
+                        child: Container(
+                          height: 40,
+                          width: 40,
+                          decoration: const BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.rectangle,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5))),
+                          child: IconButton(
+                            icon: const Icon(Icons.notifications),
+                            color: CoustColors.colrHighlightedText,
+                            onPressed: () {
+                               Navigator.of(context).pushNamed('/notification_settings');
+                              print("Notification Clicked");
+                            },
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 25.0),
+                        child: Container(
+                          height: 40,
+                          width: 40,
+                          decoration: const BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.rectangle,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5))),
+                          child: IconButton(
+                            icon: const Icon(Icons.person),
+                            color: CoustColors.colrHighlightedText,
+                            onPressed: () {
+                               Navigator.of(context).pushNamed('/profile_settings');
+                              print("Person Clicked");
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.only(left: 20.0, right: 20, top: 5),
-              child: Text('Testimonial',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-              child: Container(
-                color: Colors.white,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                        'Banquet Bookz: Event planning made easy! Love the intuitive design.',
-                        textAlign: TextAlign.center),
-                    SizedBox(height: 8),
-                    Text('Kristin Watson',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(
-                          5,
-                          (index) =>
-                              Icon(Icons.star, color: Colors.amber, size: 16)),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(left: 20.0, right: 20, top: 5),
+                    child: Text('Quick Access',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        QuickAccessCard(
+                          icon: Icons.book,
+                          label: 'My Bookings',
+                        ),
+                        QuickAccessCard(
+                          icon: Icons.history,
+                          label: 'Payment History',
+                        ),
+                        QuickAccessCard(
+                          icon: Icons.account_balance_wallet,
+                          label: 'Wallets',
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 20.0, right: 20, top: 5),
+                    child: Text('Newly',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold)),
+                  ),
+                  SizedBox(
+                    height: 200,
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: _rowitems.length,
+                        itemBuilder: (context, index) {
+                          final item = _rowitems[index];
+                          return Column(
+                            children: [
+                              Image.asset(
+                                'images/flutter.jpg',
+                                height: 100,
+                                width: 100,
+                                fit: BoxFit.fill,
+                              ),
+                              SizedBox(height: 8),
+                              Text(item.name,
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              Text(item.location,
+                                  style: TextStyle(color: Colors.grey)),
+                            ],
+                          );
+                        }),
+                  ),
+                   const Padding(
+            padding: EdgeInsets.only(left: 20.0, right: 20, top: 5),
+            child: Text('Recently viewed',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          ),
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'images/flutter.jpg',
+                  height: 100,
+                  fit: BoxFit.fill,
                 ),
+                Text("Swagath grand banquet Hall",
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.only(left: 20.0, right: 20, top: 5),
+            child: Text('Testimonial',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+            child: Container(
+              color: Colors.white,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                      'Banquet Bookz: Event planning made easy! Love the intuitive design.',
+                      textAlign: TextAlign.center),
+                  SizedBox(height: 8),
+                  Text('Kristin Watson',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                        5,
+                        (index) =>
+                            Icon(Icons.star, color: Colors.amber, size: 16)),
+                  ),
+                ],
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.only(left: 20.0, right: 20, top: 5),
-              child: Text('Recent Venue Reviews',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          ),
+          const Padding(
+            padding: EdgeInsets.only(left: 20.0, right: 20, top: 5),
+            child: Text('Recent Venue Reviews',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          ),
+          Padding(
+            padding: EdgeInsets.all(20),
+            child: ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap:true,
+                itemCount: _items.length,
+                itemBuilder: (context, index) {
+                  final item = _items[index];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0, vertical: 4.0),
+                    child: Card(
+                      elevation: 4.0,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            top: 16.0, bottom: 16, right: 16, left: 25),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Container(),
+                                Image.asset(
+                                  item.imagePath,
+                                  height: 50,
+                                  width: 50,
+                                  fit: BoxFit.fill,
+                                ),
+                                // Image.network(
+                                //   item.image,
+                                //   width: 50,
+                                //   height: 50,
+                                //   fit: BoxFit.cover,
+                                // ),
+                                SizedBox(width: 16),
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 7.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          item.heading,
+                                          style: const TextStyle(
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black),
+                                        ),
+                                        Row(
+                                          children: [
+                                            const Icon(Icons.star,
+                                                color: Colors.amber,
+                                                size: 16),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                                '${item.rating} (${item.review})',
+                                                style: const TextStyle(
+                                                    fontStyle:
+                                                        FontStyle.italic,
+                                                    fontSize: 16,
+                                                    color: Colors.black)),
+                                          ],
+                                        ),
+                                        Text(
+                                          item.description,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            color: CoustColors.colrSubText,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  // Handle button press
+                                  
+                                  Navigator.of(context)
+                                      .pushNamed('/venue_details');
+                                  print(
+                                      'Button pressed for ${item.heading}         ${_items[index]}');
+                                },
+                                child: const Text('View Details'),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+          )
+                ],
+              ),
+      
             ),
-            // Padding(
-            //   padding: EdgeInsets.all(20),
-            //   child: ListView.builder(
-            //       itemCount: _items.length,
-            //       itemBuilder: (context, index) {
-            //         final item = _items[index];
-            //         return Padding(
-            //           padding: const EdgeInsets.symmetric(
-            //               horizontal: 8.0, vertical: 4.0),
-            //           child: Card(
-            //             elevation: 4.0,
-            //             child: Padding(
-            //               padding: const EdgeInsets.only(
-            //                   top: 16.0, bottom: 16, right: 16, left: 25),
-            //               child: Column(
-            //                 children: [
-            //                   Row(
-            //                     children: [
-            //                       Container(),
-            //                       Image.asset(
-            //                         item.imagePath,
-            //                         height: 50,
-            //                         width: 50,
-            //                         fit: BoxFit.fill,
-            //                       ),
-            //                       // Image.network(
-            //                       //   item.image,
-            //                       //   width: 50,
-            //                       //   height: 50,
-            //                       //   fit: BoxFit.cover,
-            //                       // ),
-            //                       SizedBox(width: 16),
-            //                       Expanded(
-            //                         child: Padding(
-            //                           padding: const EdgeInsets.only(left: 7.0),
-            //                           child: Column(
-            //                             crossAxisAlignment:
-            //                                 CrossAxisAlignment.start,
-            //                             children: [
-            //                               Text(
-            //                                 item.heading,
-            //                                 style: const TextStyle(
-            //                                     fontSize: 24,
-            //                                     fontWeight: FontWeight.bold,
-            //                                     color: Colors.black),
-            //                               ),
-            //                               Row(
-            //                                 children: [
-            //                                   const Icon(Icons.star,
-            //                                       color: Colors.amber,
-            //                                       size: 16),
-            //                                   const SizedBox(width: 4),
-            //                                   Text(
-            //                                       '${item.rating} (${item.review})',
-            //                                       style: const TextStyle(
-            //                                           fontStyle:
-            //                                               FontStyle.italic,
-            //                                           fontSize: 16,
-            //                                           color: Colors.black)),
-            //                                 ],
-            //                               ),
-            //                               Text(
-            //                                 item.description,
-            //                                 style: const TextStyle(
-            //                                   fontSize: 16,
-            //                                   color: CoustColors.colrSubText,
-            //                                 ),
-            //                               ),
-            //                             ],
-            //                           ),
-            //                         ),
-            //                       ),
-            //                     ],
-            //                   ),
-            //                   SizedBox(
-            //                     width: double.infinity,
-            //                     child: ElevatedButton(
-            //                       onPressed: () {
-            //                         // Handle button press
-            //                         Navigator.of(context)
-            //                             .pushNamed('/venue_details');
-            //                         print(
-            //                             'Button pressed for ${item.heading}         ${_items[index]}');
-            //                       },
-            //                       child: const Text('View Details'),
-            //                     ),
-            //                   ),
-            //                 ],
-            //               ),
-            //             ),
-            //           ),
-            //         );
-            //       }),
-            // )
-          ],
-        ),
+          ),
+         
+        ],
       ),
     );
   }

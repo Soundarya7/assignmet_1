@@ -1,6 +1,5 @@
-import 'package:assignmet_1/Providers/loaded.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CoustEvalButton extends StatelessWidget {
   const CoustEvalButton(

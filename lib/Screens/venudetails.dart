@@ -1,16 +1,32 @@
 import 'package:assignmet_1/Colors/coustcolors.dart';
+import 'package:assignmet_1/Providers/loaded.dart';
+import 'package:assignmet_1/Providers/property.dart';
+import 'package:assignmet_1/Widgets/evaluatedbutton.dart';
+import 'package:assignmet_1/utils/bbapi.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:latlong2/latlong.dart';
 
-class VenuDetailsScreen extends StatefulWidget {
+class VenuDetailsScreen extends ConsumerStatefulWidget {
   const VenuDetailsScreen({super.key});
 
   @override
-  State<VenuDetailsScreen> createState() => _VenuDetailsScreenState();
+  ConsumerState<VenuDetailsScreen> createState() => _VenuDetailsScreenState();
 }
 
-class _VenuDetailsScreenState extends State<VenuDetailsScreen> {
+class _VenuDetailsScreenState extends ConsumerState<VenuDetailsScreen> {
   String sName = "Swagath Grand banquet hall";
-  String imagePath = "images/flutter.jpg";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    //ref.watch(authprovider.notifier).tryAutoLogin(),
+    ref.read(propertyprovider.notifier).getProperties();
+    //PropertyNotifier().getProperties();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,210 +56,280 @@ class _VenuDetailsScreenState extends State<VenuDetailsScreen> {
           Padding(
             padding: const EdgeInsets.only(top: 150.0, left: 20, right: 20),
             child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Hall Details",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 24,
-                              color: Colors.black),
-                        ),
-                        ClipRRect(
+              child: Consumer(
+                builder: (BuildContext context, WidgetRef ref, Widget? child) {
+                  print("build vendorDetails");
+                  final property = ref.watch(propertyprovider);
+                  print("property state : ${property.state}");
+                  final propertyNotifier = ref.watch(propertyprovider.notifier);
+                  var ismapsenable = ref.watch(enableMaps); // Get provider
+                  LatLng latLng = PropertyLocationConverter.parseLocationString(
+                      '${property.location}');
+                  String imageurl =
+                      '${Bbapi.baseUrl2}' + '${property.propertyPic}';
+                  print("Url: $imageurl");
+                  return Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(16.0),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
                           borderRadius: BorderRadius.circular(10.0),
-                          child: Image.asset(
-                            imagePath,
-                            height: 50,
-                            width: 50,
-                            fit: BoxFit.fill,
-                          ),
                         ),
-                        const SizedBox(height: 16.0),
-                        Text(
-                          sName,
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: 8.0),
-                        const Text(
-                          'Price',
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: 8.0),
-                        Row(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Icon(Icons.location_on, color: Colors.grey),
-                            SizedBox(width: 8.0),
-                            Expanded(
-                              child: Text(
-                                'Plot No. 2-4, 70/26/1/2, Alkapuri \'X\' Roads, Nagole, Hyderabad, Telangana 500068',
-                                style:
-                                    TextStyle(fontSize: 14, color: Colors.grey),
+                            const Text(
+                              "Hall Details",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 24,
+                                  color: Colors.black),
+                            ),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: Image.network(
+                                imageurl,
+                                height: 150,
+                                width: double.infinity,
+                                fit: BoxFit.fill,
                               ),
                             ),
-                          ],
-                        ),
-                        SizedBox(height: 8.0),
-                        Row(
-                          children: [
-                            Icon(Icons.phone, color: Colors.grey),
-                            SizedBox(width: 8.0),
+                            const SizedBox(height: 16.0),
                             Text(
-                              '040 2212 3456',
-                              style:
-                                  TextStyle(fontSize: 14, color: Colors.grey),
+                              sName,
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(height: 8.0),
+                            const Text(
+                              'Price',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(height: 8.0),
+                            Row(
+                              children: [
+                                Icon(Icons.location_on, color: Colors.grey),
+                                SizedBox(width: 8.0),
+                                Expanded(
+                                  child: Text(
+                                    '${property.address1}\n' +
+                                        '${property.address2}',
+                                    style: TextStyle(
+                                        fontSize: 14, color: Colors.grey),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 8.0),
+                            Row(
+                              children: [
+                                Icon(Icons.phone, color: Colors.grey),
+                                SizedBox(width: 8.0),
+                                Text(
+                                  '${property.state}',
+                                  style: TextStyle(
+                                      fontSize: 14, color: Colors.grey),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 8.0),
+                            Row(
+                              children: [
+                                Icon(Icons.email, color: Colors.grey),
+                                SizedBox(width: 8.0),
+                                Text(
+                                  'swagathgrand@gmail.com',
+                                  style: TextStyle(
+                                      fontSize: 14, color: Colors.grey),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 8.0),
+                            Row(
+                              children: [
+                                Icon(Icons.directions, color: Colors.teal),
+                                SizedBox(width: 8.0),
+                                TextButton(
+                                  onPressed: () {
+                                    ref.read(enableMaps.notifier).state = true;
+                                    // Handle Get Directions
+                                  },
+                                  child: Text(
+                                    'Get Directions',
+                                    style: TextStyle(
+                                        fontSize: 14, color: Colors.teal),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            ismapsenable == true
+                                ? SizedBox(
+                                    height: 150,
+                                    width: double.infinity,
+                                    child: FlutterMap(
+                                      options: MapOptions(
+                                        initialCenter: latLng,
+                                        initialZoom: 15,
+                                      ),
+                                      children: [
+                                        TileLayer(
+                                          urlTemplate:
+                                              'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                          subdomains: ['a', 'b', 'c'],
+                                        ),
+                                        MarkerLayer(
+                                          markers: [
+                                            Marker(
+                                              width: 80.0,
+                                              height: 80.0,
+                                              point: latLng,
+                                              child: Container(
+                                                child: const Icon(
+                                                  Icons.location_on,
+                                                  color: Colors.red,
+                                                  size: 40,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : Container(),
+                            SizedBox(height: 16.0),
+                            Text(
+                              'Categories',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(height: 8.0),
+                            Wrap(
+                              spacing: 8.0,
+                              children: [
+                                Chip(
+                                  label: Text('Banquet Hall'),
+                                  backgroundColor: Colors.purple[100],
+                                ),
+                                Chip(
+                                  label: Text('Hotel'),
+                                  backgroundColor: Colors.purple[100],
+                                ),
+                                Chip(
+                                  label: Text('Function Hall'),
+                                  backgroundColor: Colors.purple[100],
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                        SizedBox(height: 8.0),
-                        Row(
+                      ),
+                      SizedBox(height: 16.0),
+                      Text(
+                        'Customer reviews',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 8.0),
+                      Container(
+                        color: Colors.white,
+                        width: MediaQuery.of(context).size.width,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.email, color: Colors.grey),
-                            SizedBox(width: 8.0),
-                            Text(
-                              'swagathgrand@gmail.com',
-                              style:
-                                  TextStyle(fontSize: 14, color: Colors.grey),
+                            StarRating(
+                              rating: property.averageRating!,
+                              starCount: 5,
+                              color: Colors.amber,
                             ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                Text('${property.averageRating} out of 5'),
+                                SizedBox(width: 8.0),
+                                Text('${property.reviewCount} total ratings'),
+                                Spacer(),
+                                IconButton(
+                                  icon: Icon(Icons.arrow_forward),
+                                  onPressed: () {
+                                    // Handle view more reviews
+                                  },
+                                ),
+                              ],
+                            )
                           ],
                         ),
-                        SizedBox(height: 8.0),
-                        Row(
+                      ),
+                      SizedBox(height: 16.0),
+                      Visibility(
+                        visible: false,
+                        child: Column(
                           children: [
-                            Icon(Icons.directions, color: Colors.teal),
-                            SizedBox(width: 8.0),
-                            TextButton(
-                              onPressed: () {
-                                // Handle Get Directions
-                              },
-                              child: Text(
-                                'Get Directions',
-                                style:
-                                    TextStyle(fontSize: 14, color: Colors.teal),
+                            Text(
+                              'Recent reviews',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(height: 8.0),
+                            ReviewCard(),
+                            ReviewCard(),
+                            SizedBox(height: 16.0),
+                            Center(
+                              widthFactor: double.infinity,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  // Handle see more reviews
+                                },
+                                child: Text('See more reviews'),
                               ),
                             ),
+                            SizedBox(height: 16.0),
                           ],
                         ),
-                        SizedBox(height: 16.0),
-                        Text(
-                          'Categories',
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      Container(
+                        color: Colors.white,
+                        width: MediaQuery.of(context).size.width,
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pushNamed('/review');
+                            //Go to next page
+                          },
+                          child: Text('Leave a review',
+                              style: const TextStyle(
+                                  color: CoustColors.colrHighlightedText)),
                         ),
-                        SizedBox(height: 8.0),
-                        Wrap(
-                          spacing: 8.0,
-                          children: [
-                            Chip(
-                              label: Text('Banquet Hall'),
-                              backgroundColor: Colors.purple[100],
-                            ),
-                            Chip(
-                              label: Text('Hotel'),
-                              backgroundColor: Colors.purple[100],
-                            ),
-                            Chip(
-                              label: Text('Function Hall'),
-                              backgroundColor: Colors.purple[100],
-                            ),
-                          ],
+                      ),
+                      SizedBox(height: 16.0),
+                      SizedBox(
+                        width: double.infinity,
+                        child: CoustEvalButton(
+                          onPressed: () {
+                            // Handle book
+                            
+                            
+                          },
+                          buttonName: 'Book',
+                          bgColor: CoustColors.colrButton1,
+                          width: double.infinity,
+                          radius: 8,
+                          FontSize: 20,
                         ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 16.0),
-                  Text(
-                    'Customer reviews',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 8.0),
-                  Container(
-                    color: Colors.white,
-                    width: MediaQuery.of(context).size.width,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.star, color: Colors.amber),
-                            Icon(Icons.star, color: Colors.amber),
-                            Icon(Icons.star, color: Colors.amber),
-                            Icon(Icons.star_half, color: Colors.amber),
-                            Icon(Icons.star_border, color: Colors.amber),
-                            SizedBox(width: 8.0),
-                           
-                          ],
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(width: 20,),
-                             Text('3.6 out of 5'),
-                            SizedBox(width: 8.0),
-                            Text('85 total ratings'),
-                            Spacer(),
-                            IconButton(
-                              icon: Icon(Icons.arrow_forward),
-                              onPressed: () {
-                                // Handle view more reviews
-                              },
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 16.0),
-                  Text(
-                    'Recent reviews',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 8.0),
-                  ReviewCard(),
-                  ReviewCard(),
-                  SizedBox(height: 16.0),
-                  Center(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Handle see more reviews
-                      },
-                      child: Text('See more reviews'),
-                    ),
-                  ),
-                  SizedBox(height: 16.0),
-                  Center(
-                    child: TextButton(
-                      onPressed: () {
-                        // Handle leave a review
-                      },
-                      child: Text('Leave a review',
-                          style: TextStyle(color: Colors.purple)),
-                    ),
-                  ),
-                  SizedBox(height: 16.0),
-                  Center(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Handle book
-                      },
-                      child: Text('Book'),
-                    ),
-                  ),
-                ],
+                      ),
+                      
+                    ],
+                  );
+                },
               ),
             ),
           )
@@ -301,5 +387,41 @@ class ReviewCard extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class StarRating extends StatelessWidget {
+  final double rating;
+  final int starCount;
+  final Color color;
+
+  StarRating(
+      {this.rating = 0.0, this.starCount = 5, this.color = Colors.yellow});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(starCount, (index) {
+        return Icon(
+          index < rating.floor()
+              ? Icons.star
+              : index < rating
+                  ? Icons.star_half
+                  : Icons.star_border,
+          color: color,
+        );
+      }),
+    );
+  }
+}
+
+class PropertyLocationConverter {
+  // Function to convert a location string to LatLng
+  static LatLng parseLocationString(String location) {
+    final parts = location.split(',');
+    final latitude = double.parse(parts[0]);
+    final longitude = double.parse(parts[1]);
+    return LatLng(latitude, longitude);
   }
 }

@@ -34,14 +34,10 @@ class _ProfileSetingsScreenState extends State<ProfileSetingsScreen> {
     final prefs = await SharedPreferences.getInstance();
     final extractData =
         json.decode(prefs.getString('userData')!) as Map<String, dynamic>;
-    String sname = extractData['username'];
-    String smailid = extractData['email'];
-    String snumber = extractData['mobileno'];
-    setState(() {
-      sUsername = sname;
-      smail = smailid;
-      snum = snumber;
-    });
+     sUsername = extractData['username'];
+    smail = extractData['email'];
+    snum = extractData['mobileno'];
+    
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -59,11 +55,12 @@ class _ProfileSetingsScreenState extends State<ProfileSetingsScreen> {
   }
 
   TextEditingController _edtxtMail = TextEditingController();
-  TextEditingController _edtxtName = TextEditingController();
+  final TextEditingController _edtxtName = TextEditingController();
   TextEditingController _edtxtNum = TextEditingController();
-   TextEditingController _edtxtloc = TextEditingController(text: "Hyderabad");
+   TextEditingController _edtxtloc = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    _edtxtName.text=sUsername;
     return Scaffold(
       backgroundColor: CoustColors.colrFill,
       body: Padding(
@@ -96,9 +93,10 @@ class _ProfileSetingsScreenState extends State<ProfileSetingsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CoustTextfield(
+                      //filltext: sUsername,
                       isVisible: true,
                       title: "Name",
-                      controller: _edtxtNum,
+                      controller: _edtxtName,
                       inputtype: TextInputType.name,
                       hint: sUsername,
                       radius: 8,

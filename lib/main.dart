@@ -7,6 +7,7 @@ import 'package:assignmet_1/Screens/paymenthistory.dart';
 import 'package:assignmet_1/Screens/notificationsettings.dart';
 import 'package:assignmet_1/Screens/profilesettings.dart';
 import 'package:assignmet_1/Screens/registration.dart';
+import 'package:assignmet_1/Screens/reviews.dart';
 import 'package:assignmet_1/Screens/upcoming.dart';
 import 'package:assignmet_1/Screens/venudetails.dart';
 import 'package:assignmet_1/Widgets/bottomnavigation.dart';
@@ -108,6 +109,9 @@ class MyApp extends ConsumerWidget {
         },
         '/location': (BuildContext context) {
           return  LocationScreen();
+        },
+        '/review': (BuildContext context) {
+          return  ReviewScreen();
         },
         
         

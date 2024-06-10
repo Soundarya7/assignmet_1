@@ -171,12 +171,7 @@ class ReviewCard extends StatelessWidget {
           children: [
             Icon(Icons.calendar_today, size: 16.0),
             SizedBox(width: 8.0),
-            Column(
-              children: [
-                Text('Reserved on Saturday,',textAlign: TextAlign.center,),
-                Text("30 Feb 2024 @ 19:33"),
-              ],
-            ),
+            Expanded(child: Text('Reserved on Saturday,30 Feb 2024 @ 19:33',textAlign: TextAlign.center,overflow: TextOverflow.visible)),
           ],
         ),
       ),

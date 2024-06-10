@@ -12,14 +12,14 @@ class CoustTextfield extends StatefulWidget {
       this.suficonColor,
       this.prefixIcon,
       this.preiconColor,
-      this.radius,
-      this.width,
+      required this.radius,
+      required this.width,
       this.iLength,
       this.password = false,
       this.validator,
       this.onChanged,
       required this.isVisible,
-      this.title});
+      this.title,this.filltext,});
   TextEditingController? controller;
   final TextInputType? inputtype;
   final String? hint;
@@ -27,14 +27,15 @@ class CoustTextfield extends StatefulWidget {
   final Color? suficonColor;
   final Widget? prefixIcon;
   final Color? preiconColor;
-  final double? radius;
-  final double? width;
+  final double radius;
+  final double width;
   final int? iLength;
   final bool? password;
   final String? Function(String?)? validator;
   final String? Function(String?)? onChanged;
   final bool isVisible;
   final String? title;
+  final String? filltext;
   @override
   State<CoustTextfield> createState() => _CoustTextfieldState();
 }
@@ -51,7 +52,7 @@ class _CoustTextfieldState extends State<CoustTextfield> {
             child: Column(
               children: [
                 Text(widget.title.toString()),
-                SizedBox(
+                const SizedBox(
                   height: 5,
                 )
               ],
@@ -72,8 +73,8 @@ class _CoustTextfieldState extends State<CoustTextfield> {
             prefixIcon: widget.prefixIcon,
             prefixIconColor: widget.preiconColor,
             border: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(widget.radius!)),
-                borderSide: BorderSide(width: widget.width!)),
+                borderRadius: BorderRadius.all(Radius.circular(widget.radius)),
+                borderSide: BorderSide(width: widget.width)),
           ),
         ),
       ],

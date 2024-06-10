@@ -68,8 +68,6 @@ class _LoginScreenState extends State<LoginScreen> {
     Navigator.of(context).pushNamed('/registration');
   }
 
-  final bottomSheetHeightNotifier = ValueNotifier<double>(0.0);
-
   final TextEditingController _edtxtNum = TextEditingController();
 
   @override

@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "1001395690807",
-    "project_id": "banquetbookz-7b37e",
-    "storage_bucket": "banquetbookz-7b37e.appspot.com"
+    "project_number": "974168106274",
+    "project_id": "banquetbookz-4bde9",
+    "storage_bucket": "banquetbookz-4bde9.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1001395690807:android:e32423a6f0557f2dfdceb2",
+        "mobilesdk_app_id": "1:974168106274:android:4c30682dc5ff7e0e90f17b",
         "android_client_info": {
           "package_name": "com.example.assignmet_1"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAL8vwSXKPqBxvQi_9Du0v_w9YTQm9fU1I"
+          "current_key": "AIzaSyCsmkFc33rQRqfNENHb6vVzu3WEtid6wHw"
         }
       ],
       "services": {

@@ -1,8 +1,9 @@
 import 'dart:convert';
 
-import 'package:assignmet_1/Colors/coustcolors.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 
 class LocationScreen extends StatefulWidget{
   const LocationScreen({super.key});
@@ -12,72 +13,117 @@ class LocationScreen extends StatefulWidget{
 }
 
 class _LocationScreenState extends State<LocationScreen> {
-   String _address = '';
+   final TextEditingController _controller = TextEditingController();
+  MapController _mapController = MapController();
+  LatLng _currentLatLng = LatLng(17.3850, 78.4867); // Default to Hyderabad
 
-  String _coordinates = 'Coordinates will be shown here';
-
-  void _getCoordinates() async {
-    try {
-      final result = await fetchCoordinates(_address);
-      setState(() {
-        _coordinates = 'Latitude: ${result['lat']}, Longitude: ${result['lon']}';
-      });
-    } catch (e) {
-      setState(() {
-        _coordinates = 'Error: $e';
-      });
+  void _searchLocation() async {
+    final response = await http.get(Uri.parse(
+        'https://nominatim.openstreetmap.org/search?q=${_controller.text}&format=json&addressdetails=1&limit=1'));
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      if (data.isNotEmpty) {
+        double lat = double.parse(data[0]['lat']);
+        double lon = double.parse(data[0]['lon']);
+        setState(() {
+          _currentLatLng = LatLng(lat, lon);
+        });
+        _mapController.move(_currentLatLng, 15.0);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(      
-      backgroundColor: CoustColors.colrFill,
-       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Location'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
             TextField(
-              onChanged: (value) {
-                _address = value;
-              },
+              controller: _controller,
               decoration: InputDecoration(
-                labelText: 'Enter address',
+                hintText: 'Search location',
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: _searchLocation,
+                ),
               ),
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _getCoordinates,
-              child: Text('Get Coordinates'),
+            Expanded(
+              child: FlutterMap(
+                mapController: _mapController,
+                options: MapOptions(
+                  initialCenter: _currentLatLng,
+                  initialZoom: 15,
+                ),
+                children: [
+                  TileLayer(
+                    urlTemplate:
+                        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    subdomains: ['a', 'b', 'c'],
+                  ),
+                  MarkerLayer(
+                    markers: [
+                      Marker(
+                        
+                        width: 80.0,
+                        height: 80.0,
+                        point: _currentLatLng,
+                        child:  Container(
+                          child: Icon(
+                            Icons.location_on,
+                            color: Colors.red,
+                            size: 40,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-            SizedBox(height: 20),
-            Text(_coordinates),
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: GridView.count(
+                crossAxisCount: 2,
+                shrinkWrap: true,
+                mainAxisSpacing: 4.0,
+                crossAxisSpacing: 4.0,
+                children: [
+                  _buildLocationTile('Hyderabad'),
+                  _buildLocationTile('Bangalore'),
+                  _buildLocationTile('Mumbai'),
+                  _buildLocationTile('Pune'),
+                  _buildLocationTile('Delhi'),
+                  _buildLocationTile('Rajasthan'),
+                ],
+              ),
+            ),
+            ElevatedButton(
+              onPressed: _searchLocation,
+              child: Text('Update'),
+            ),
           ],
         ),
       ),
     );
   }
-}
 
-Future<Map<String, dynamic>> fetchCoordinates(String address) async {
-  const String baseUrl = 'https://nominatim.openstreetmap.org/search';
-  const String format = 'json';
-
-  final response = await http.get(
-    Uri.parse('$baseUrl?q=$address&format=$format&addressdetails=1'),
-    headers: {
-      'User-Agent': 'YourAppName', // Nominatim requires a User-Agent header
-    },
-  );
-
-  if (response.statusCode == 200) {
-    List<dynamic> jsonResponse = json.decode(response.body);
-    if (jsonResponse.isNotEmpty) {
-      return jsonResponse[0];
-    } else {
-      throw Exception('No results found');
-    }
-  } else {
-    throw Exception('Failed to fetch coordinates');
+  Widget _buildLocationTile(String location) {
+    return GestureDetector(
+      onTap: () {
+        _controller.text = location;
+        _searchLocation();
+      },
+      child: Container(
+        alignment: Alignment.center,
+        color: Colors.grey[300],
+        child: Text(location),
+      ),
+    );
   }
 }
