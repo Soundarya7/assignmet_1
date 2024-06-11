@@ -28,8 +28,6 @@ class MyApp extends ConsumerWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authprovider);
-    print("authState.token${authState.token}");
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -53,13 +51,13 @@ class MyApp extends ConsumerWidget {
             selectedItemColor: CoustColors.colrButton3,
             unselectedItemColor: CoustColors.colrSubText,
           )),
-     // home: authState.token != null ? const HomeScreen() : const LoginScreen(),
+      // home: authState.token != null ? const HomeScreen() : const LoginScreen(),
       routes: {
         '/': (context) {
           //Loginpage
           return Consumer(
             builder: (context, ref, child) {
-              final authState = ref.watch(authprovider);
+              ref.watch(authprovider);
               // Check if the user is authenticated and profile is complete
 
               // If the user is not authenticated, attempt auto-login
@@ -86,42 +84,41 @@ class MyApp extends ConsumerWidget {
           //registration page
           return const RegistrationScreen();
         },
-        '/welcome': (BuildContext context) {//welcome page
-          return  CoustNavigation();
+        '/welcome': (BuildContext context) {
+          //welcome page
+          return CoustNavigation();
         },
         '/venue_details': (BuildContext context) {
           return const VenuDetailsScreen();
         },
-         '/profile_settings': (BuildContext context) {
-          return  ProfileSetingsScreen();
+        '/profile_settings': (BuildContext context) {
+          return ProfileSetingsScreen();
         },
-         '/payment_history': (BuildContext context) {
-          return  PaymenthistoryScreen();
+        '/payment_history': (BuildContext context) {
+          return PaymenthistoryScreen();
         },
         '/notification_settings': (BuildContext context) {
-          return  NotificationSettingsScreen();
+          return NotificationSettingsScreen();
         },
         '/manage_booking': (BuildContext context) {
-          return  ManageBookingScreen();
+          return ManageBookingScreen();
         },
         '/upcoming_booking': (BuildContext context) {
-          return  UpcomingbookingsScreen();
+          return UpcomingbookingsScreen();
         },
         '/location': (BuildContext context) {
-          return  LocationScreen();
+          return LocationScreen();
         },
         '/review': (BuildContext context) {
-          return  ReviewScreen();
+          return ReviewScreen();
         },
-        
-        
+
         // '/home': (BuildContext context) {
         //   return const HomeScreen();
         // },
         // '/settings': (BuildContext context) {
         //   return const SettingsScreen();
         // },
-
       },
     );
   }

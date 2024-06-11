@@ -41,29 +41,29 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCE1c7P1IjMXIPs9htgqt9eBDXVLHIrFk4',
-    appId: '1:913696249326:web:5c3a6ed2f945780e50aaff',
-    messagingSenderId: '913696249326',
-    projectId: 'banquetbookzvendor',
-    authDomain: 'banquetbookzvendor.firebaseapp.com',
-    storageBucket: 'banquetbookzvendor.appspot.com',
-    measurementId: 'G-5PQG8J8KZS',
+    apiKey: 'AIzaSyBldGHm042GJ38KVisv56XdI4uufCkaRfw',
+    appId: '1:974168106274:web:92a00d93dd5e27f890f17b',
+    messagingSenderId: '974168106274',
+    projectId: 'banquetbookz-4bde9',
+    authDomain: 'banquetbookz-4bde9.firebaseapp.com',
+    storageBucket: 'banquetbookz-4bde9.appspot.com',
+    measurementId: 'G-HCWG7SZPSG',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyC3g3wT51ehC8eKPx6B8k5vbEOyvSJbeL4',
-    appId: '1:913696249326:android:c9d739da6138fa5850aaff',
-    messagingSenderId: '913696249326',
-    projectId: 'banquetbookzvendor',
-    storageBucket: 'banquetbookzvendor.appspot.com',
+    apiKey: 'AIzaSyCsmkFc33rQRqfNENHb6vVzu3WEtid6wHw',
+    appId: '1:974168106274:android:4c30682dc5ff7e0e90f17b',
+    messagingSenderId: '974168106274',
+    projectId: 'banquetbookz-4bde9',
+    storageBucket: 'banquetbookz-4bde9.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyA0FyqRvoMbEO9VvGMbeljLf9KwgD5NuSY',
-    appId: '1:913696249326:ios:516f19e51c1624d750aaff',
-    messagingSenderId: '913696249326',
-    projectId: 'banquetbookzvendor',
-    storageBucket: 'banquetbookzvendor.appspot.com',
+    apiKey: 'AIzaSyAo2cZ8yAQQC6dV0x8LbgeT4OVA05zSKlg',
+    appId: '1:974168106274:ios:161e2b00e1e9fa8990f17b',
+    messagingSenderId: '974168106274',
+    projectId: 'banquetbookz-4bde9',
+    storageBucket: 'banquetbookz-4bde9.appspot.com',
     iosBundleId: 'com.example.assignmet1',
   );
 
