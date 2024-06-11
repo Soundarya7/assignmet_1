@@ -60,7 +60,7 @@ class PhoneAuthNotifier extends StateNotifier<PhoneAuthState> {
 
     try {
       loadingState.state = true;
-      print("phonenum:$phoneNumber" );
+      print("phonenum:$phoneNumber");
       await auth.verifyPhoneNumber(
         phoneNumber: "+91$phoneNumber",
         verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async {
@@ -76,9 +76,9 @@ class PhoneAuthNotifier extends StateNotifier<PhoneAuthState> {
         codeSent: (String verificationId, [int? forceResendingToken]) async {
           state = state.copyWith(vrfCompleted: true);
           loadingState.state = false;
-           ref.read(buttonTextProvider.notifier).state = "Log in"; 
-           ref.read( VerifyOtp.notifier).state = true;
-          //ref.read(enablepasswaorProvider.notifier).state = false; 
+          ref.read(buttonTextProvider.notifier).state = "Log in";
+          ref.read(VerifyOtp.notifier).state = true;
+          //ref.read(enablepasswaorProvider.notifier).state = false;
           print("Vrification Done ${state.vrfCompleted}");
           print("VerID1 $verificationId");
           _showAlertDialog(
@@ -98,14 +98,15 @@ class PhoneAuthNotifier extends StateNotifier<PhoneAuthState> {
   }
 
   Future<void> signInWithPhoneNumber(String smsCode, BuildContext context,
-      WidgetRef ref, String phoneNumber,bool login,{String? password,String? email,String? username}) async {
-    // print("Sms${smsCode}");
+      WidgetRef ref, String phoneNumber, bool login,
+      {String? password, String? email, String? username}) async {
+    print("Sms${smsCode}");
     final prefs = await SharedPreferences.getInstance();
-    String? verificationId =  prefs.getString('verificationid');
-                  Set<String> keys = prefs.getKeys();
+    String? verificationId = prefs.getString('verificationid');
+    Set<String> keys = prefs.getKeys();
 
-              // Print keys
-              print('SharedPreferences Keys: $keys');
+    // Print keys
+    print('SharedPreferences Keys: $keys');
 
     if (verificationId == null) {
       _showAlertDialog(context, "Error", "Verification ID is null.");
@@ -123,16 +124,18 @@ class PhoneAuthNotifier extends StateNotifier<PhoneAuthState> {
         if (value.user != null) {
           var user = auth.currentUser!;
           print("vreification success");
-           
+
           String? firebaseToken = await user.getIdToken();
           print(user.getIdToken());
-          if(login){
-             ref .read(authprovider.notifier).loginOtp(context,firebaseToken, ref);
-          } else{
-            ref.read(authprovider.notifier).registerUser(context,username,email,phoneNumber,password,ref);
+          if (login) {
+            ref
+                .read(authprovider.notifier)
+                .loginOtp(context, firebaseToken, ref);
+          } else {
+            ref.read(authprovider.notifier).registerUser(
+                context, username, email, phoneNumber, password, ref);
           }
-          
-        } else{
+        } else {
           print("vreification failed");
         }
       });
@@ -165,21 +168,21 @@ class PhoneAuthNotifier extends StateNotifier<PhoneAuthState> {
         //showsnackbar(context, e.toString());
       }
       showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: const Text('Error'),
-                  content: Text('${e}'),
-                  actions: <Widget>[
-                    TextButton(
-                      child: const Text('OK'),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    )
-                  ],
-                );
-              });
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Error'),
+              content: Text('${e}'),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          });
     }
     loadingState.state = false;
   }
@@ -205,7 +208,8 @@ class PhoneAuthNotifier extends StateNotifier<PhoneAuthState> {
 
     // Implement any additional logic as needed
   }
-   String cleanErrorMessage(String errorMessage) {
+
+  String cleanErrorMessage(String errorMessage) {
     // Remove the "ERROR:" prefix
     String cleanedMessage = errorMessage.replaceFirst('ERROR:', '');
 
