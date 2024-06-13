@@ -1,7 +1,11 @@
 import 'package:assignmet_1/Colors/coustcolors.dart';
 import 'package:assignmet_1/Providers/loaded.dart';
-import 'package:assignmet_1/Providers/property.dart';
+import 'package:assignmet_1/Providers/rating.dart';
+import 'package:assignmet_1/Screens/bookvenue.dart';
+import 'package:assignmet_1/Screens/reviews.dart';
 import 'package:assignmet_1/Widgets/evaluatedbutton.dart';
+import 'package:assignmet_1/models/propertystate.dart';
+import 'package:assignmet_1/models/ratingmodel.dart';
 import 'package:assignmet_1/utils/bbapi.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -9,7 +13,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
 class VenuDetailsScreen extends ConsumerStatefulWidget {
-  const VenuDetailsScreen({super.key});
+  final Propertystate property;
+  const VenuDetailsScreen({super.key, required this.property});
 
   @override
   ConsumerState<VenuDetailsScreen> createState() => _VenuDetailsScreenState();
@@ -23,12 +28,16 @@ class _VenuDetailsScreenState extends ConsumerState<VenuDetailsScreen> {
     // TODO: implement initState
     super.initState();
     //ref.watch(authprovider.notifier).tryAutoLogin(),
-    ref.read(propertyprovider.notifier).getProperties();
+    //ref.read(propertyprovider.notifier).getProperties();
     //PropertyNotifier().getProperties();
+     ref.read(ratingprovider.notifier).getreviews(context,widget.property,ref);
   }
 
   @override
   Widget build(BuildContext context) {
+    final ratingstate = ref.watch(ratingprovider);
+    Propertystate property = widget.property;
+    
     return Scaffold(
       backgroundColor: CoustColors.colrFill,
       body: Stack(
@@ -59,14 +68,16 @@ class _VenuDetailsScreenState extends ConsumerState<VenuDetailsScreen> {
               child: Consumer(
                 builder: (BuildContext context, WidgetRef ref, Widget? child) {
                   print("build vendorDetails");
-                  final property = ref.watch(propertyprovider);
-                  print("property state : ${property.state}");
-                  final propertyNotifier = ref.watch(propertyprovider.notifier);
+                 
+                  print("Details ${property}");
+                  // final property = ref.watch(propertyprovider);
+                  // print("property state : ${property.state}");
+                  // final propertyNotifier = ref.watch(propertyprovider.notifier);
                   var ismapsenable = ref.watch(enableMaps); // Get provider
                   LatLng latLng = PropertyLocationConverter.parseLocationString(
-                      '${property.location}');
+                      '${property.location!}');
                   String imageurl =
-                      '${Bbapi.baseUrl2}' + '${property.propertyPic}';
+                      '${Bbapi.baseUrl2}' + '${property.propertyPic!}';
                   print("Url: $imageurl");
                   return Column(
                     children: [
@@ -93,7 +104,7 @@ class _VenuDetailsScreenState extends ConsumerState<VenuDetailsScreen> {
                                 imageurl,
                                 height: 150,
                                 width: double.infinity,
-                                fit: BoxFit.fill,
+                                fit: BoxFit.fitHeight,
                               ),
                             ),
                             const SizedBox(height: 16.0),
@@ -115,8 +126,8 @@ class _VenuDetailsScreenState extends ConsumerState<VenuDetailsScreen> {
                                 SizedBox(width: 8.0),
                                 Expanded(
                                   child: Text(
-                                    '${property.address1}\n' +
-                                        '${property.address2}',
+                                    '${property.address1!}\n' +
+                                        '${property.address2!}',
                                     style: TextStyle(
                                         fontSize: 14, color: Colors.grey),
                                   ),
@@ -129,7 +140,7 @@ class _VenuDetailsScreenState extends ConsumerState<VenuDetailsScreen> {
                                 Icon(Icons.phone, color: Colors.grey),
                                 SizedBox(width: 8.0),
                                 Text(
-                                  '${property.state}',
+                                  '${property.state!}',
                                   style: TextStyle(
                                       fontSize: 14, color: Colors.grey),
                                 ),
@@ -255,7 +266,7 @@ class _VenuDetailsScreenState extends ConsumerState<VenuDetailsScreen> {
                                 SizedBox(
                                   width: 20,
                                 ),
-                                Text('${property.averageRating} out of 5'),
+                                Text('${property.averageRating!} out of 5'),
                                 SizedBox(width: 8.0),
                                 Text('${property.reviewCount} total ratings'),
                                 Spacer(),
@@ -272,7 +283,7 @@ class _VenuDetailsScreenState extends ConsumerState<VenuDetailsScreen> {
                       ),
                       SizedBox(height: 16.0),
                       Visibility(
-                        visible: false,
+                        visible: true,
                         child: Column(
                           children: [
                             Text(
@@ -281,19 +292,25 @@ class _VenuDetailsScreenState extends ConsumerState<VenuDetailsScreen> {
                                   fontSize: 16, fontWeight: FontWeight.bold),
                             ),
                             SizedBox(height: 8.0),
-                            ReviewCard(),
-                            ReviewCard(),
+                            ratingstate.when(
+                                loading: () =>
+                                    Center(child: CircularProgressIndicator()),
+                                error: (error, stack) =>
+                                    Center(child: Text('Error: $error')),
+                                data: (reviews) {
+                                  print("length: ${reviews.length}");
+                                  return ListView.builder(
+                                     physics: NeverScrollableScrollPhysics(),
+                                      shrinkWrap:true,
+                                      itemCount: reviews.length,
+                                      itemBuilder: (context, index) {
+                                        // final item = _items[index];
+                                        final review = reviews[index];
+                                        return reviewcard(review);
+                                      });
+                                }),
                             SizedBox(height: 16.0),
-                            Center(
-                              widthFactor: double.infinity,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  // Handle see more reviews
-                                },
-                                child: Text('See more reviews'),
-                              ),
-                            ),
-                            SizedBox(height: 16.0),
+                            
                           ],
                         ),
                       ),
@@ -302,7 +319,10 @@ class _VenuDetailsScreenState extends ConsumerState<VenuDetailsScreen> {
                         width: MediaQuery.of(context).size.width,
                         child: TextButton(
                           onPressed: () {
-                            Navigator.of(context).pushNamed('/review');
+                           // Navigator.of(context).pushNamed('/review');
+                             Navigator.push(context, MaterialPageRoute(builder: (context) => ReviewScreen(property: property),
+                                  ),
+                                );
                             //Go to next page
                           },
                           child: Text('Leave a review',
@@ -315,9 +335,8 @@ class _VenuDetailsScreenState extends ConsumerState<VenuDetailsScreen> {
                         width: double.infinity,
                         child: CoustEvalButton(
                           onPressed: () {
-                            // Handle book
-                            
-                            
+                             Navigator.push(context, MaterialPageRoute(builder: (context) => BookVenueScreen(property: property),
+                                  ));
                           },
                           buttonName: 'Book',
                           bgColor: CoustColors.colrButton1,
@@ -326,7 +345,6 @@ class _VenuDetailsScreenState extends ConsumerState<VenuDetailsScreen> {
                           FontSize: 20,
                         ),
                       ),
-                      
                     ],
                   );
                 },
@@ -337,11 +355,8 @@ class _VenuDetailsScreenState extends ConsumerState<VenuDetailsScreen> {
       ),
     );
   }
-}
 
-class ReviewCard extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
+  Widget reviewcard(RatingState rateing) {
     return Card(
       color: Colors.white,
       margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -362,27 +377,23 @@ class ReviewCard extends StatelessWidget {
                   children: [
                     Text('Top reviews',
                         style: TextStyle(fontWeight: FontWeight.bold)),
-                    Row(
-                      children: [
-                        Icon(Icons.star, color: Colors.amber, size: 16.0),
-                        Icon(Icons.star, color: Colors.amber, size: 16.0),
-                        Icon(Icons.star, color: Colors.amber, size: 16.0),
-                        Icon(Icons.star, color: Colors.amber, size: 16.0),
-                        Icon(Icons.star, color: Colors.amber, size: 16.0),
-                      ],
+                    StarRating(
+                      rating: rateing.rating!,
+                      starCount: 5,
+                      color: Colors.amber,
                     ),
                   ],
                 ),
               ],
             ),
             SizedBox(height: 8.0),
-            Text('Excellent service',
+            Text(rateing.review!,
                 style: TextStyle(fontWeight: FontWeight.bold)),
             SizedBox(height: 4.0),
-            Text(
-              'In a laoreet purus. Integer turpis quam, laoreet id orci nec, ultrices lacinia nunc. Aliquam erat vo',
-              style: TextStyle(color: Colors.grey),
-            ),
+            // Text(
+            //   'In a laoreet purus. Integer turpis quam, laoreet id orci nec, ultrices lacinia nunc. Aliquam erat vo',
+            //   style: TextStyle(color: Colors.grey),
+            // ),
           ],
         ),
       ),
@@ -391,12 +402,11 @@ class ReviewCard extends StatelessWidget {
 }
 
 class StarRating extends StatelessWidget {
-  final double rating;
+  final int rating;
   final int starCount;
   final Color color;
 
-  StarRating(
-      {this.rating = 0.0, this.starCount = 5, this.color = Colors.yellow});
+  StarRating({this.rating = 0, this.starCount = 5, this.color = Colors.yellow});
 
   @override
   Widget build(BuildContext context) {

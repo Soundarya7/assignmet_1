@@ -1,6 +1,6 @@
 class RatingState{
   final int? id;
-  final double? rating;
+  final int? rating;
   final String? review;
    RatingState({
     this.id,
@@ -9,7 +9,7 @@ class RatingState{
    });
    RatingState.fromJson(Map<String, dynamic> json)
       : id = json['property'] as int?,
-        rating = json['rating'] as double?,
+        rating = json['rating'] as int?,
         review = json['review'] as String?;
        
   Map<String, dynamic> toJson() => {
@@ -20,7 +20,7 @@ class RatingState{
       };
     RatingState copyWith({
     int? id,
-    double? rating,
+    int? rating,
     String? review,
    
   }){

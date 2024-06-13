@@ -1,18 +1,24 @@
 import 'package:assignmet_1/Colors/coustcolors.dart';
+import 'package:assignmet_1/Providers/property.dart';
+import 'package:assignmet_1/Screens/venudetails.dart';
 import 'package:assignmet_1/models/venues_listmodel.dart';
+import 'package:assignmet_1/utils/bbapi.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:latlong2/latlong.dart';
 
 // ignore: must_be_immutable
-class Venuscreen extends StatefulWidget {
+class Venuscreen extends ConsumerStatefulWidget {
   const Venuscreen({super.key});
 
   @override
-  State<Venuscreen> createState() => _VenuscreenState();
+  ConsumerState<Venuscreen> createState() => _VenuscreenState();
 }
 
-class _VenuscreenState extends State<Venuscreen> {
+class _VenuscreenState extends ConsumerState<Venuscreen> {
   final List<VenuesListmodel> _items = [];
   
+
 
   @override
   void initState() {
@@ -26,6 +32,7 @@ class _VenuscreenState extends State<Venuscreen> {
 
   @override
   Widget build(BuildContext context) {
+     final propertyState = ref.watch(propertyprovider);
     return Scaffold(
       backgroundColor: CoustColors.colrFill,
       //bottomNavigationBar: CoustNavigation(nav_index: 1,),
@@ -74,97 +81,103 @@ class _VenuscreenState extends State<Venuscreen> {
                 ),
               ],
             ),), 
-            Expanded(
-              child: ListView.builder(
-                  itemCount: _items.length,
-                  itemBuilder: (context, index) {
-                    final item = _items[index];
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8.0, vertical: 4.0),
-                      child: Card(
-                        elevation: 4.0,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 16.0,bottom: 16,right: 16,left: 25),
-                          child: Column(
-                            children: [
-                              Row(
+            propertyState.when(
+              loading: () => Center(child: CircularProgressIndicator()),
+              error: (error, stack) => Center(child: Text('Error: $error')),
+              data: (properties) {
+               
+                return Expanded(
+                  child: ListView.builder(
+                      itemCount: properties.length,
+                      itemBuilder: (context, index) {
+                       // final item = _items[index];
+                        final property = properties[index];
+                        LatLng latLng = PropertyLocationConverter.parseLocationString('${property.location}');
+                        String imageurl ='${Bbapi.baseUrl2}' + '${property.propertyPic}';
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8.0, vertical: 4.0),
+                          child: Card(
+                            elevation: 4.0,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 16.0,bottom: 16,right: 16,left: 25),
+                              child: Column(
                                 children: [
-                                  Container(),
-                                  Image.asset(
-                                    item.imagePath,
-                                    height: 50,
-                                    width: 50,
-                                    fit: BoxFit.fill,
-                                  ),
-                                  // Image.network(
-                                  //   item.image,
-                                  //   width: 50,
-                                  //   height: 50,
-                                  //   fit: BoxFit.cover,
-                                  // ),
-                                   SizedBox(width: 16),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 7.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            item.heading,
-                                            style:  const TextStyle(
-                                              fontSize: 24,
-                                             fontWeight: FontWeight.bold,
-                                             color: Colors.black
-                                            ),
-                                          ),
-                                          Row(
+                                  Row(
+                                    children: [
+                                     Image.network(
+                                        imageurl,
+                                        height: 50,
+                                        width: 50,
+                                        fit: BoxFit.fill,
+                                      ),
+                                       SizedBox(width: 16),
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(left: 7.0),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
-                                              const Icon(Icons.star,
-                                                  color: Colors.amber,
-                                                  size: 16),
-                                              const SizedBox(width: 4),
                                               Text(
-                                                  '${item.rating} (${item.review})',
-                                                  style: const TextStyle(fontStyle: FontStyle.italic,
-                                                      fontSize:16,color: Colors.black)),
-                                                      
+                                                "Swagath Grand banquet hall",
+                                                style:  const TextStyle(
+                                                  fontSize: 24,
+                                                 fontWeight: FontWeight.bold,
+                                                 color: Colors.black
+                                                ),
+                                              ),
+                                              Row(
+                                                children: [
+                                                  const Icon(Icons.star,
+                                                      color: Colors.amber,
+                                                      size: 16),
+                                                  const SizedBox(width: 4),
+                                                  Text(
+                                                      '${property.averageRating} (${property.reviewCount})',
+                                                      style: const TextStyle(fontStyle: FontStyle.italic,
+                                                          fontSize:16,color: Colors.black)),
+                                                          
+                                                ],
+                                              ),
+                                              Text(
+                                                '${property.address1} ' +
+                                                '${property.address2}\n'
+                                                '${property.pincode}',
+                                                style: const TextStyle(
+                                                  fontSize: 16,
+                                                  color: CoustColors.colrSubText,
+                                                ),
+                                              ),
+                                             
                                             ],
                                           ),
-                                          Text(
-                                            item.description,
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              color: CoustColors.colrSubText,
-                                            ),
-                                          ),
-                                         
-                                        ],
+                                        ),
                                       ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                      onPressed: () async {
+                                        //Copywith 
+                                        // Handle button press
+                                         Navigator.push(context, MaterialPageRoute(builder: (context) => VenuDetailsScreen(property: property),
+                                  ),
+                                );
+                                       // Navigator.of(context).pushNamed('/venue_details');
+                                        //print('Button pressed for ${item.heading}         ${_items[index]}');
+                                      },
+                                      child: const Text('View Details'),
                                     ),
                                   ),
                                 ],
                               ),
-                              SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  onPressed: () async {
-                                   
-                                    // Handle button press
-                                     Navigator.of(context).pushNamed('/venue_details');
-                                    print(
-                                        'Button pressed for ${item.heading}         ${_items[index]}');
-                                  },
-                                  child: const Text('View Details'),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ),
-                    );
-                  }),
+                        );
+                      }),
+                );}
             ),
           
         ],

@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-class PropertyNotifier extends StateNotifier<Propertystate> {
-  PropertyNotifier() : super(Propertystate());
+class PropertyNotifier extends StateNotifier<AsyncValue<List<Propertystate>>> {
+  PropertyNotifier() : super(AsyncValue.loading());
   
 
   Future<List<Propertystate>> getProperties() async {
@@ -21,6 +21,7 @@ class PropertyNotifier extends StateNotifier<Propertystate> {
     final response = await http.get(
       Uri.parse(url),
       headers: {
+         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Token $token',
       },
     );
@@ -31,23 +32,25 @@ class PropertyNotifier extends StateNotifier<Propertystate> {
         print("Response 200");
         List<dynamic> userDetails = json.decode(response.body);
         if (userDetails.isNotEmpty) {
-          final property = userDetails.first;
-            print("property: ${property}");
+          //final property = userDetails.first;
+          final properties = userDetails.map((json) => Propertystate.fromJson(json)).toList();
+          state = AsyncValue.data(properties);
+            //print("property: ${property}");
                    
-            state = state.copyWith(
-            id: property['id'] as int?,
-            propertyPic: property['property_pic'] as String?,
-            address1: property['address_1'] as String?,
-            address2: property['address_2'] as String?,
-            reviewCount: property['review_count'] as int?,
-            averageRating: (property['average_rating'] as num?)?.toDouble(),
-            location: property['location'] as String?,
-            state: property['state'] as String?,
-            city: property['city'] as String?,
-            pincode: property['pincode'] as String?,
-            activationStatus: property['activation_status'] as String?,
-          );
-          print(state.state);
+          //   state = state.copyWith(
+          //   id: property['id'] as int?,
+          //   propertyPic: property['property_pic'] as String?,
+          //   address1: property['address_1'] as String?,
+          //   address2: property['address_2'] as String?,
+          //   reviewCount: property['review_count'] as int?,
+          //   averageRating: (property['average_rating'] as num?)?.toDouble(),
+          //   location: property['location'] as String?,
+          //   state: property['state'] as String?,
+          //   city: property['city'] as String?,
+          //   pincode: property['pincode'] as String?,
+          //   activationStatus: property['activation_status'] as String?,
+          // );
+          //print(state.state);
            return userDetails.map((json) => Propertystate.fromJson(json)).toList();
         }
         else {
@@ -66,6 +69,6 @@ class PropertyNotifier extends StateNotifier<Propertystate> {
 }
 
 final propertyprovider =
-    StateNotifierProvider<PropertyNotifier, Propertystate>((ref) {
+    StateNotifierProvider<PropertyNotifier, AsyncValue<List<Propertystate>>>((ref) {
   return PropertyNotifier();
 });

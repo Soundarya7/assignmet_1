@@ -2,17 +2,21 @@ import 'dart:convert';
 
 import 'package:assignmet_1/Colors/coustcolors.dart';
 import 'package:assignmet_1/Providers/property.dart';
+import 'package:assignmet_1/Screens/venudetails.dart';
 import 'package:assignmet_1/models/venues_listmodel.dart';
+import 'package:assignmet_1/utils/bbapi.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   final List<VenueCard> _rowitems = [];
   final List<VenuesListmodel> _items = [];
 
@@ -20,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     GetData();
-   // PropertyNotifier().getProperties();
+    ref.read(propertyprovider.notifier).getProperties();
     for (int i = 0; i < 5; i++) {
       _rowitems.add(VenueCard(
           name: "Swagath Grand",
@@ -45,6 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String sUsername = "Abc";
   @override
   Widget build(BuildContext context) {
+    final propertyState = ref.watch(propertyprovider);
     return Scaffold(
       backgroundColor: CoustColors.colrFill,
       body: Column(
@@ -99,7 +104,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             icon: const Icon(Icons.notifications),
                             color: CoustColors.colrHighlightedText,
                             onPressed: () {
-                               Navigator.of(context).pushNamed('/notification_settings');
+                              Navigator.of(context)
+                                  .pushNamed('/notification_settings');
                               print("Notification Clicked");
                             },
                           ),
@@ -119,7 +125,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             icon: const Icon(Icons.person),
                             color: CoustColors.colrHighlightedText,
                             onPressed: () {
-                               Navigator.of(context).pushNamed('/profile_settings');
+                              Navigator.of(context)
+                                  .pushNamed('/profile_settings');
                               print("Person Clicked");
                             },
                           ),
@@ -168,189 +175,242 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold)),
                   ),
-                  SizedBox(
-                    height: 200,
-                    child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: _rowitems.length,
-                        itemBuilder: (context, index) {
-                          final item = _rowitems[index];
-                          return Column(
-                            children: [
-                              Image.asset(
-                                'images/flutter.jpg',
-                                height: 100,
-                                width: 100,
-                                fit: BoxFit.fill,
-                              ),
-                              SizedBox(height: 8),
-                              Text(item.name,
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold)),
-                              Text(item.location,
-                                  style: TextStyle(color: Colors.grey)),
-                            ],
-                          );
-                        }),
-                  ),
-                   const Padding(
-            padding: EdgeInsets.only(left: 20.0, right: 20, top: 5),
-            child: Text('Recently viewed',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          ),
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  'images/flutter.jpg',
-                  height: 100,
-                  fit: BoxFit.fill,
-                ),
-                Text("Swagath grand banquet Hall",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-              ],
-            ),
-          ),
-          const Padding(
-            padding: EdgeInsets.only(left: 20.0, right: 20, top: 5),
-            child: Text('Testimonial',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-            child: Container(
-              color: Colors.white,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                      'Banquet Bookz: Event planning made easy! Love the intuitive design.',
-                      textAlign: TextAlign.center),
-                  SizedBox(height: 8),
-                  Text('Kristin Watson',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(
-                        5,
-                        (index) =>
-                            Icon(Icons.star, color: Colors.amber, size: 16)),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const Padding(
-            padding: EdgeInsets.only(left: 20.0, right: 20, top: 5),
-            child: Text('Recent Venue Reviews',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          ),
-          Padding(
-            padding: EdgeInsets.all(20),
-            child: ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap:true,
-                itemCount: _items.length,
-                itemBuilder: (context, index) {
-                  final item = _items[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0, vertical: 4.0),
-                    child: Card(
-                      elevation: 4.0,
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            top: 16.0, bottom: 16, right: 16, left: 25),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Container(),
-                                Image.asset(
-                                  item.imagePath,
-                                  height: 50,
-                                  width: 50,
-                                  fit: BoxFit.fill,
-                                ),
-                                // Image.network(
-                                //   item.image,
-                                //   width: 50,
-                                //   height: 50,
-                                //   fit: BoxFit.cover,
-                                // ),
-                                SizedBox(width: 16),
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 7.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                  Padding(
+                    padding: const EdgeInsets.only(left:  15.0),
+                    child: SizedBox(
+                        height: 200,
+                        child: propertyState.when(
+                            loading: () =>
+                                Center(child: CircularProgressIndicator()),
+                            error: (error, stack) =>
+                                Center(child: Text('Error: $error')),
+                            data: (properties) {
+                              return ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: properties.length,
+                                  itemBuilder: (context, index) {
+                                    // final item = _items[index];
+                                    final property = properties[index];
+                                    LatLng latLng = PropertyLocationConverter
+                                        .parseLocationString(
+                                            '${property.location}');
+                                    String imageurl = '${Bbapi.baseUrl2}' +
+                                        '${property.propertyPic}';
+                                    return Column(
                                       children: [
-                                        Text(
-                                          item.heading,
-                                          style: const TextStyle(
-                                              fontSize: 24,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black),
+                                        Image.network(
+                                          imageurl,
+                                          height: 100,
+                                          width: 100,
+                                          fit: BoxFit.fill,
                                         ),
-                                        Row(
-                                          children: [
-                                            const Icon(Icons.star,
-                                                color: Colors.amber,
-                                                size: 16),
-                                            const SizedBox(width: 4),
-                                            Text(
-                                                '${item.rating} (${item.review})',
-                                                style: const TextStyle(
-                                                    fontStyle:
-                                                        FontStyle.italic,
-                                                    fontSize: 16,
-                                                    color: Colors.black)),
-                                          ],
-                                        ),
-                                        Text(
-                                          item.description,
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            color: CoustColors.colrSubText,
-                                          ),
-                                        ),
+                                        SizedBox(height: 8),
+                                        Text(property.address1!,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold)),
+                                        Text(property.pincode!,
+                                            style: TextStyle(color: Colors.grey)),
                                       ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                onPressed: () async {
-                                  // Handle button press
-                                  
-                                  Navigator.of(context)
-                                      .pushNamed('/venue_details');
-                                  print(
-                                      'Button pressed for ${item.heading}         ${_items[index]}');
-                                },
-                                child: const Text('View Details'),
-                              ),
-                            ),
-                          ],
+                                    );
+                                  });
+                            })),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 20.0, right: 20, top: 5),
+                    child: Text('Recently viewed',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold)),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+                    child:  propertyState.when(
+              loading: () => Center(child: CircularProgressIndicator()),
+              error: (error, stack) => Center(child: Text('Error: $error')),
+              data: (properties) {
+                final property = properties[0];
+                                LatLng latLng = PropertyLocationConverter
+                                    .parseLocationString(
+                                        '${property.location}');
+                                String imageurl = '${Bbapi.baseUrl2}' +
+                                    '${property.propertyPic}';
+                return   Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.network(
+                          imageurl,
+                          height: 100,
+                          width: 100,
+                          fit: BoxFit.fill,
                         ),
+                        Text(property.pincode!,
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                      ],
+                    );
+              }
+                     ),    
+                  
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 20.0, right: 20, top: 5),
+                    child: Text('Testimonial',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold)),
+                  ),
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+                    child: Container(
+                      color: Colors.white,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                              'Banquet Bookz: Event planning made easy! Love the intuitive design.',
+                              textAlign: TextAlign.center),
+                          SizedBox(height: 8),
+                          Text('Kristin Watson',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: List.generate(
+                                5,
+                                (index) => Icon(Icons.star,
+                                    color: Colors.amber, size: 16)),
+                          ),
+                        ],
                       ),
                     ),
-                  );
-                }),
-          )
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 20.0, right: 20, top: 5),
+                    child: Text('Recent Venue Reviews',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold)),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(20),
+                    child: propertyState.when(
+                        loading: () =>
+                            Center(child: CircularProgressIndicator()),
+                        error: (error, stack) =>
+                            Center(child: Text('Error: $error')),
+                        data: (properties) {
+                          return ListView.builder(
+                              physics: NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: properties.length,
+                              itemBuilder: (context, index) {
+                                // final item = _items[index];
+                                final property = properties[index];
+                                LatLng latLng = PropertyLocationConverter
+                                    .parseLocationString(
+                                        '${property.location}');
+                                String imageurl = '${Bbapi.baseUrl2}' +
+                                    '${property.propertyPic}';
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0, vertical: 4.0),
+                                  child: Card(
+                                    elevation: 4.0,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 16.0,
+                                          bottom: 16,
+                                          right: 16,
+                                          left: 25),
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Container(),
+                                              Image.network(
+                                               imageurl,
+                                                width: 50,
+                                                height: 50,
+                                                fit: BoxFit.fill,
+                                              ),
+                                              SizedBox(width: 16),
+                                              Expanded(
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 7.0),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        "item.heading",
+                                                        style: const TextStyle(
+                                                            fontSize: 24,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color:
+                                                                Colors.black),
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          const Icon(Icons.star,
+                                                              color:
+                                                                  Colors.amber,
+                                                              size: 16),
+                                                          const SizedBox(
+                                                              width: 4),
+                                                          Text(
+                                                              '${property.averageRating} (${property.reviewCount})',
+                                                              style: const TextStyle(
+                                                                  fontStyle:
+                                                                      FontStyle
+                                                                          .italic,
+                                                                  fontSize: 16,
+                                                                  color: Colors
+                                                                      .black)),
+                                                        ],
+                                                      ),
+                                                      Text(
+                                                         '${property.address1} ' +
+                                                '${property.address2}\n'
+                                                '${property.pincode}',
+                                                        style: const TextStyle(
+                                                          fontSize: 16,
+                                                          color: CoustColors
+                                                              .colrSubText,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            width: double.infinity,
+                                            child: ElevatedButton(
+                                              onPressed: () async {
+                                                // Handle button press
+
+                                                Navigator.push(context, MaterialPageRoute(builder: (context) => VenuDetailsScreen(property: property))
+                                  );
+                                               
+                                              },
+                                              child: const Text('View Details'),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              });
+                        }),
+                  )
                 ],
               ),
-      
             ),
           ),
-         
         ],
       ),
     );
@@ -367,13 +427,15 @@ class QuickAccessCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        switch(label){
-          case "My Bookings": Navigator.of(context).pushNamed('/upcoming_booking');
-          break;
-          case "Payment History":Navigator.of(context).pushNamed('/payment_history');
-          break;
+        switch (label) {
+          case "My Bookings":
+            Navigator.of(context).pushNamed('/upcoming_booking');
+            break;
+          case "Payment History":
+            Navigator.of(context).pushNamed('/payment_history');
+            break;
           case "Wallets":
-          break;
+            break;
         }
       },
       child: Container(

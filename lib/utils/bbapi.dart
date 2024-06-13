@@ -7,4 +7,5 @@ class Bbapi{
   static const String login_otp = "$baseUrl/verify_phone_number/";
   static const String properties = "$baseUrl/properties/";
   static const String post_review = "$baseUrl/post_review/";
+  static const String get_review = "$baseUrl/get_reviews/";
 }

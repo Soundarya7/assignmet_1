@@ -88,9 +88,7 @@ class MyApp extends ConsumerWidget {
           //welcome page
           return CoustNavigation();
         },
-        '/venue_details': (BuildContext context) {
-          return const VenuDetailsScreen();
-        },
+      
         '/profile_settings': (BuildContext context) {
           return ProfileSetingsScreen();
         },
@@ -109,10 +107,15 @@ class MyApp extends ConsumerWidget {
         '/location': (BuildContext context) {
           return LocationScreen();
         },
-        '/review': (BuildContext context) {
-          return ReviewScreen();
-        },
-
+        // '/review': (BuildContext context) {
+        //   return ReviewScreen();
+        // },
+          // '/BookVenueScreen': (BuildContext context) {
+        //   return const `BookVenueScreen`();
+        // },
+  // '/venue_details': (BuildContext context) {
+        //   return const VenuDetailsScreen();
+        // },
         // '/home': (BuildContext context) {
         //   return const HomeScreen();
         // },

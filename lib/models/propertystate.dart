@@ -4,7 +4,7 @@ class Propertystate {
   final String? address1;
   final String? address2;
   final int? reviewCount;
-  final double? averageRating;
+  final int? averageRating;
   final String? location;
   final String? state;
   final String? city;
@@ -27,29 +27,29 @@ class Propertystate {
 
   Propertystate.fromJson(Map<String, dynamic> json)
       : id = json['id'] as int?,
-        propertyPic = json['propertyPic'] as String?,
-        address1 = json['address1'] as String?,
-        address2 = json['address2'] as String?,
-        reviewCount = json['reviewCount'] as int?,
-        averageRating = json['averageRating'] as double?,
+        propertyPic = json['property_pic'] as String?,
+        address1 = json['address_1'] as String?,
+        address2 = json['address_2'] as String?,
+        reviewCount = json['review_count'] as int?,
+        averageRating = json['average_rating'] as int?,
         location = json['location'] as String?,
         state = json['state'] as String?,
         city = json['city'] as String?,
         pincode = json['pincode'] as String?,
-        activationStatus = json['activationStatus'] as String?;
+        activationStatus = json['activation_status'] as String?;
 
   Map<String, dynamic> toJson() => {
         'id': id,
-        'propertyPic': propertyPic,
-        'address1': address1,
-        'address2': address2,
-        'reviewCount': reviewCount,
-        'averageRating': averageRating,
+        'property_pic': propertyPic,
+        'address_1': address1,
+        'address_2': address2,
+        'review_count': reviewCount,
+        'average_rating': averageRating,
         'location': location,
         'state': state,
         'city': city,
         'pincode': pincode,
-        'activationStatus': activationStatus,
+        'activation_status': activationStatus,
       };
 
   Propertystate copyWith({
@@ -58,7 +58,7 @@ class Propertystate {
     String? address1,
     String? address2,
     int? reviewCount,
-    double? averageRating,
+    int? averageRating,
     String? location,
     String? state,
     String? city,

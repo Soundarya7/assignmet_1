@@ -1,18 +1,20 @@
 import 'package:assignmet_1/Colors/coustcolors.dart';
 import 'package:assignmet_1/Providers/rating.dart';
+import 'package:assignmet_1/models/propertystate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ReviewScreen extends StatefulWidget {
-  const ReviewScreen({super.key});
+  final Propertystate property;
+  const ReviewScreen({super.key, required this.property});
 
   @override
   State<ReviewScreen> createState() => _ReviewScreenState();
 }
 
 class _ReviewScreenState extends State<ReviewScreen> {
-  double _rating = 3.5;
+  double _rating = 3;
   //TextEditingController _titleController = TextEditingController();
   TextEditingController _reviewController = TextEditingController();
   @override
@@ -91,7 +93,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                       return ElevatedButton(
                         onPressed: () {
                           ref.read(ratingprovider.notifier).postreviews(context,
-                              1, _rating, _reviewController.text.trim(), ref);
+                              widget.property, _rating, _reviewController.text.trim(), ref);
                         },
                         child: Text('Submit'),
                         style: ElevatedButton.styleFrom(),
