@@ -17,23 +17,14 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  final List<VenueCard> _rowitems = [];
-  final List<VenuesListmodel> _items = [];
+
 
   @override
   void initState() {
     super.initState();
     GetData();
     ref.read(propertyprovider.notifier).getProperties();
-    for (int i = 0; i < 5; i++) {
-      _rowitems.add(VenueCard(
-          name: "Swagath Grand",
-          location: 'Bachupally, Hyderabad\nAug 25, 2023'));
-    }
-    for (int i = 0; i < 9; i++) {
-      _items.add(VenuesListmodel("Swagath Grand", 'images/flutter.jpg', 3.5, 84,
-          'Bachupally, Hyderabad\nAug 25, 2023'));
-    }
+   
   }
 
   Future<void> GetData() async {
@@ -196,21 +187,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                             '${property.location}');
                                     String imageurl = '${Bbapi.baseUrl2}' +
                                         '${property.propertyPic}';
-                                    return Column(
-                                      children: [
-                                        Image.network(
-                                          imageurl,
-                                          height: 100,
-                                          width: 100,
-                                          fit: BoxFit.fill,
-                                        ),
-                                        SizedBox(height: 8),
-                                        Text(property.address1!,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold)),
-                                        Text(property.pincode!,
-                                            style: TextStyle(color: Colors.grey)),
-                                      ],
+                                    return Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Column(
+                                        children: [
+                                          Image.network(
+                                            imageurl,
+                                            height: 100,
+                                            width: 100,
+                                            fit: BoxFit.fill,
+                                          ),
+                                          SizedBox(height: 8),
+                                          Text(property.address1!,
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold)),
+                                          Text(property.pincode!,
+                                              style: TextStyle(color: Colors.grey)),
+                                        ],
+                                      ),
                                     );
                                   });
                             })),

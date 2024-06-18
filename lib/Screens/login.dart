@@ -69,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   final TextEditingController _edtxtNum = TextEditingController();
-
+  final TextEditingController _edtxtpwd = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,15 +122,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                 suffixIcon: const Icon(Icons.person),
                                 radius: 8.0,
                                 width: 10,
-                                onChanged: (_edtxtNum) {
-                                  if (_edtxtNum == null || _edtxtNum.isEmpty) {
+                                onChanged: (edtxtNum) {
+                                  if (edtxtNum == null || edtxtNum.isEmpty) {
                                     ref
                                             .read(enablepasswaorProvider.notifier)
                                             .state =
                                         false; // If num textfield is null invisble pwd field
                                   } else {
-                                    if (isValidNumber(_edtxtNum)) {
-                                      if (_edtxtNum.length >= 10) {
+                                    if (isValidNumber(edtxtNum)) {
+                                      if (edtxtNum.length >= 10) {
                                         //if valid mobile num
                                         //ref.read(enablepasswaorProvider.notifier) .state = true;
                                       }
@@ -138,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                               .read(buttonTextProvider.notifier)
                                               .state =
                                           "Send OTP"; // Set Name for button based on textfield content
-                                    } else if (isValidEmail(_edtxtNum)) {
+                                    } else if (isValidEmail(edtxtNum)) {
                                       ref
                                           .read(enablepasswaorProvider.notifier)
                                           .state = true;
@@ -151,6 +151,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                           .state = "Send OTP";
                                     }
                                   }
+                                  //  if ((bOtp == true) &&(sBtnName == "Log in")){
+                                  //    ref.read(buttonTextProvider.notifier).state = "Send OTP";
+                                  //    ref.read(VerifyOtp.notifier).state = false;
+                                  //    ref.read(enablepasswaorProvider.notifier).state = false;
+                                  //   _edtxtNum.clear();
+                                  // }  //otp will send only after 45 sec completed
 
                                   return null;
                                 },
@@ -186,6 +192,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ? sBtnName == "Login"
                                           ? Container(
                                               child: CoustTextfield(
+                                                controller: _edtxtpwd,
                                                 isVisible: false,
                                                 hint: "Password",
                                                 suffixIcon:
@@ -231,42 +238,51 @@ class _LoginScreenState extends State<LoginScreen> {
                                     width: double.infinity,
                                     child: CoustEvalButton(
                                       onPressed: loader == true
-                                      ? null
-                                      :  () {
-                                        if (_validationkey.currentState!
-                                            .validate()) {
-                                          if ((isPwdVisible == false) &&
-                                              (sBtnName == "Send OTP")) {
-                                            // if Mobilenumber entered
-                                            ref
-                                                .read(authprovider.notifier)
-                                                .numCheck(context,
-                                                    _edtxtNum.text.trim(), ref);
-                                          } else if ((bOtp == true) &&
-                                              (sBtnName == "Log in")) {
-                                            //received otp and changed the sent otp button to login
-                                            // Send Vefcation code
+                                          ? null
+                                          : () {
+                                              if (_validationkey.currentState!
+                                                  .validate()) {
+                                                if ((isPwdVisible == false) &&
+                                                    (sBtnName == "Send OTP")) {
+                                                  // if Mobilenumber entered
+                                                  ref
+                                                      .read(
+                                                          authprovider.notifier)
+                                                      .numCheck(
+                                                          context,
+                                                          _edtxtNum.text.trim(),
+                                                          ref);
+                                                  print("print if");
+                                                } else if ((bOtp == true) &&
+                                                    (sBtnName == "Log in")) {
+                                                  //received otp and changed the sent otp button to login
+                                                  // Send Vefcation code
 
-                                            ref
-                                                .read(
-                                                    phoneAuthProvider.notifier)
-                                                .signInWithPhoneNumber(
-                                                    sOtp,
-                                                    context,
-                                                    ref,
-                                                    _edtxtNum.text.trim(),
-                                                    true);
-                                          } else if ((isPwdVisible == true) &&
-                                              (sBtnName == "Login")) {
-                                            // password check
-                                            Navigator.of(context)
-                                                .pushNamed('/venue');
-                                          } else {
-                                            print(
-                                                "visible: ${isPwdVisible}, pwd: ${sBtnName}");
-                                          }
-                                        }
-                                      },
+                                                  ref
+                                                      .read(phoneAuthProvider
+                                                          .notifier)
+                                                      .signInWithPhoneNumber(
+                                                          sOtp,
+                                                          context,
+                                                          ref,
+                                                          _edtxtNum.text.trim(),
+                                                          true);
+                                                  print("print else if1");
+                                                } else if ((isPwdVisible ==
+                                                        true) &&
+                                                    (sBtnName == "Login")) {
+                                                  ref
+                                                      .read(
+                                                          authprovider.notifier)
+                                                      .loginmail(context,
+                                                          _edtxtNum.text.trim(),_edtxtpwd.text.trim(), ref);
+                                                  print("print else if2");
+                                                } else {
+                                                  print(
+                                                      "visible: ${isPwdVisible}, pwd: ${sBtnName}");
+                                                }
+                                              }
+                                            },
                                       isLoading: loader,
                                       buttonName:
                                           (ref.watch(buttonTextProvider)),

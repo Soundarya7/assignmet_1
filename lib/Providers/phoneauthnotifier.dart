@@ -55,6 +55,7 @@ class PhoneAuthNotifier extends StateNotifier<PhoneAuthState> {
   Future<void> phoneAuth(
       BuildContext context, String phoneNumber, WidgetRef ref) async {
     final loadingState = ref.watch(loadingProvider.notifier);
+     final loadingState2 = ref.read(loadingProvider2.notifier);
     final FirebaseAuth auth =
         FirebaseAuth.instance; // Ensure you have an instance of FirebaseAuth
 
@@ -70,12 +71,14 @@ class PhoneAuthNotifier extends StateNotifier<PhoneAuthState> {
         },
         verificationFailed: (FirebaseException exception) {
           loadingState.state = false;
+          loadingState2.state = false;
           _showAlertDialog(context, "Verification Failed",
               exception.message ?? "An error occurred.");
         },
         codeSent: (String verificationId, [int? forceResendingToken]) async {
           state = state.copyWith(vrfCompleted: true);
           loadingState.state = false;
+          loadingState2.state = false;
           ref.read(buttonTextProvider.notifier).state = "Log in";
           ref.read(VerifyOtp.notifier).state = true;
           //ref.read(enablepasswaorProvider.notifier).state = false;
@@ -92,6 +95,7 @@ class PhoneAuthNotifier extends StateNotifier<PhoneAuthState> {
         },
       );
     } catch (e) {
+      loadingState2.state = false;
       loadingState.state = false;
       _showAlertDialog(context, "Error", e.toString());
     }

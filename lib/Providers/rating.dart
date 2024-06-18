@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:assignmet_1/Screens/venudetails.dart';
 import 'package:assignmet_1/models/propertystate.dart';
 import 'package:assignmet_1/models/ratingmodel.dart';
 import 'package:assignmet_1/utils/bbapi.dart';

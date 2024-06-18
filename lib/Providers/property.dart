@@ -35,22 +35,7 @@ class PropertyNotifier extends StateNotifier<AsyncValue<List<Propertystate>>> {
           //final property = userDetails.first;
           final properties = userDetails.map((json) => Propertystate.fromJson(json)).toList();
           state = AsyncValue.data(properties);
-            //print("property: ${property}");
-                   
-          //   state = state.copyWith(
-          //   id: property['id'] as int?,
-          //   propertyPic: property['property_pic'] as String?,
-          //   address1: property['address_1'] as String?,
-          //   address2: property['address_2'] as String?,
-          //   reviewCount: property['review_count'] as int?,
-          //   averageRating: (property['average_rating'] as num?)?.toDouble(),
-          //   location: property['location'] as String?,
-          //   state: property['state'] as String?,
-          //   city: property['city'] as String?,
-          //   pincode: property['pincode'] as String?,
-          //   activationStatus: property['activation_status'] as String?,
-          // );
-          //print(state.state);
+           
            return userDetails.map((json) => Propertystate.fromJson(json)).toList();
         }
         else {

@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:assignmet_1/Colors/coustcolors.dart';
+import 'package:assignmet_1/Providers/auth.dart';
 import 'package:assignmet_1/Widgets/evaluatedbutton.dart';
 import 'package:assignmet_1/Widgets/textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,28 +18,35 @@ class ProfileSetingsScreen extends StatefulWidget {
 
 class _ProfileSetingsScreenState extends State<ProfileSetingsScreen> {
   final _validationkey = GlobalKey<FormState>();
-  String sUsername = "example1";
-  String smail = "example@email.com";
-  String snum = "1234567890";
+  String sUsername = "Abc";
+  String smail = "example123@email.com";
+  String snum = "1234567800";
   final TextEditingController _dobController = TextEditingController();
-  // final TextEditingController nameController = TextEditingController(text: "Name");
+  TextEditingController _edtxtMail = TextEditingController();
+  final TextEditingController _edtxtName = TextEditingController();
+  TextEditingController _edtxtNum = TextEditingController();
+  TextEditingController _edtxtloc = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _dobController.text =
-        DateFormat('dd - MM - yyyy').format(DateTime(1990, 1, 1));
     GetData();
+    // _dobController.text =
+    //     DateFormat('dd - MM - yyyy').format(DateTime(1990, 1, 1));
   }
 
   Future<void> GetData() async {
     final prefs = await SharedPreferences.getInstance();
     final extractData =
         json.decode(prefs.getString('userData')!) as Map<String, dynamic>;
-     sUsername = extractData['username'];
-    smail = extractData['email'];
-    snum = extractData['mobileno'];
-    
+    print("userDetails:${extractData}");
+    setState(() {
+      sUsername = extractData['username'];
+      smail = extractData['email'];
+      snum = extractData['mobileno'];
+    });
+
+    print(sUsername);
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -54,13 +63,13 @@ class _ProfileSetingsScreenState extends State<ProfileSetingsScreen> {
     }
   }
 
-  TextEditingController _edtxtMail = TextEditingController();
-  final TextEditingController _edtxtName = TextEditingController();
-  TextEditingController _edtxtNum = TextEditingController();
-   TextEditingController _edtxtloc = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    _edtxtName.text=sUsername;
+    print(sUsername);
+    _edtxtName.text = sUsername;
+    _edtxtNum.text = snum;
+    _edtxtMail.text = smail;
+
     return Scaffold(
       backgroundColor: CoustColors.colrFill,
       body: Padding(
@@ -93,7 +102,6 @@ class _ProfileSetingsScreenState extends State<ProfileSetingsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CoustTextfield(
-                      //filltext: sUsername,
                       isVisible: true,
                       title: "Name",
                       controller: _edtxtName,
@@ -144,65 +152,87 @@ class _ProfileSetingsScreenState extends State<ProfileSetingsScreen> {
                         if (_edtxtNum == null || _edtxtNum.isEmpty) {
                           return 'Please enter Mobile Number';
                         }
-                        if (_edtxtNum.length < 13) {
+                        if ((_edtxtNum.length < 10) &&
+                            (_edtxtNum.length > 10)) {
                           return 'Please enter 10 digit Mobile Number';
                         }
                         return null;
                       },
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Text("Date of Birth"),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    TextFormField(
-                      onTap: () {
-                        _selectDate(context);
-                      },
-                      controller: _dobController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(8)),
-                            borderSide: BorderSide(width: 10)),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Text("Location"),
-                     const SizedBox(
-                  height: 5,
-                ),
-                    TextFormField(
-                      obscureText: false,
-                      onTap: () {
-                         Navigator.of(context).pushNamed('/location');
-                      },
-                      controller: _edtxtloc,
-                      decoration: const InputDecoration(
-                        hintText: "Hyderabad",
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(8)),
-                            borderSide: BorderSide(width: 10)),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    Visibility(
+                        visible: false,
+                        child: Container(
+                          child: Column(
+                            children: [
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Text("Date of Birth"),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              TextFormField(
+                                onTap: () {
+                                  _selectDate(context);
+                                },
+                                controller: _dobController,
+                                decoration: const InputDecoration(
+                                  border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(8)),
+                                      borderSide: BorderSide(width: 10)),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Text("Location"),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              TextFormField(
+                                obscureText: false,
+                                onTap: () {
+                                  Navigator.of(context).pushNamed('/location');
+                                },
+                                controller: _edtxtloc,
+                                decoration: const InputDecoration(
+                                  hintText: "Hyderabad",
+                                  border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(8)),
+                                      borderSide: BorderSide(width: 10)),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                            ],
+                          ),
+                        )),
                   ],
                 ),
               ),
             ),
-            CoustEvalButton(
-              onPressed: () {
-                if (_validationkey.currentState!.validate()) {}
+            Consumer(
+              builder: (BuildContext context, WidgetRef ref, Widget? child) {
+                return CoustEvalButton(
+                  onPressed: () {
+                    if (_validationkey.currentState!.validate()) {
+                      ref.read(authprovider.notifier).UserUpdate(
+                          context,
+                          _edtxtName.text.trim(),
+                          _edtxtNum.text.trim(),
+                          _edtxtMail.text.trim(),
+                          ref);
+                    }
+                  },
+                  buttonName: "Update",
+                  radius: 8,
+                  width: double.infinity,
+                  FontSize: 20,
+                );
               },
-              buttonName: "Update",
-              radius: 8,
-              width: double.infinity,
-              FontSize: 20,
             )
           ],
         ),

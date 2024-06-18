@@ -293,8 +293,9 @@ class _VenuDetailsScreenState extends ConsumerState<VenuDetailsScreen> {
                             ),
                             SizedBox(height: 8.0),
                             ratingstate.when(
-                                loading: () =>
-                                    Center(child: CircularProgressIndicator()),
+                              loading: (){return Container();},
+                                // loading: () =>
+                                //     Center(child: CircularProgressIndicator()),
                                 error: (error, stack) =>
                                     Center(child: Text('Error: $error')),
                                 data: (reviews) {

@@ -1,67 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LoginScreen extends StatefulWidget{
-  const LoginScreen({super.key});
+class DetailScreen extends StatefulWidget{
+     final DateTime date;
+  const DetailScreen({super.key,required this.date});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<DetailScreen> createState() => _DetailScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-   final buttonTextProvider = StateProvider<String>((ref) => 'Submit');
-    final TextEditingController _controller = TextEditingController();
+class _DetailScreenState extends State<DetailScreen> {
+
   @override
   Widget build(BuildContext context) {
-     
-      return Scaffold(
-        body: Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Consumer(
-        builder: (BuildContext context, WidgetRef ref, Widget? child) { 
-           String sButton = ref.watch(buttonTextProvider);
-           print("entered mail: ${ref.watch(buttonTextProvider.notifier).state}");
-          return  Column(
+    DateTime date = widget.date;
+    final String formattedDate = '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Detail Screen'),
+      ),
+      body: Center(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextField(
-              controller: _controller,
-              decoration: const InputDecoration(
-                labelText: 'Enter a number or an email',
-              ),
-              onChanged: (text) {
-                if (_isNumber(text)) {
-                  print("entered Num");
-                   ref.read(buttonTextProvider.notifier).state = 'Number Entered';
-                 
-                } else if (_isEmail(text)) {
-                   print("entered mail");
-                   ref.read(buttonTextProvider.notifier).state= 'Email Entered';
-                    
-                } else {
-                   ref.read(buttonTextProvider.notifier).state = 'Submit';
-                }
-              },
+            Text(
+              'Selected Date:',
+              style: TextStyle(fontSize: 24),
             ),
-            SizedBox(height: 20),
-                 ElevatedButton(
-                  onPressed: () {},
-
-                  child: Text((ref.watch(buttonTextProvider))),
-                ),
-            
+            SizedBox(height: 16),
+            Text(
+              formattedDate,
+              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+            ),
+            // Display more details about the date if available
           ],
-        );
-        },
+        ),
       ),
-    ),
-      );
-  }
-   bool _isNumber(String text) {
-    return RegExp(r'^\d+$').hasMatch(text);
-  }
-
-  bool _isEmail(String text) {
-    return RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(text);
+    );
   }
 }
